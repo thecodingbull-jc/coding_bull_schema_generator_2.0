@@ -3246,6 +3246,7 @@ function get_faq_object($post_id, $faq, $question, $answer) {
     }
 
     return [
+        '@context' => "https://schema.org",
         '@type' => "FAQPage",
         'mainEntity' => $result
     ];
