@@ -328,6 +328,37 @@ $average_rating = round($average_rating, 1);
         </div>
 
         <div style="display:flex; flex-direction:column; gap:8px;">
+            <label>areaServed</label>
+            <div>
+                <label>City</label>
+                <select name="areaServed-city" id="schema-generator-areaServed-ciity">
+                    <option value="" selected>Select field name</option>
+                    <?php foreach($all_fields as $slug => $label): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label>addressRegion</label>
+                <select name="areaServed-province" id="schema-generator-areaServed-province">
+                    <option value="" selected>Select field name</option>
+                    <?php foreach($all_fields as $slug => $label): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label>sameAs</label>
+                <select name="areaServed-id" id="schema-generator-areaServed-id">
+                    <option value="" selected>Select field name</option>
+                    <?php foreach($all_fields as $slug => $label): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
             <label>hasOfferCatalog(General)</label>
             <div>
                 <label>hasOfferCatalog name</label>
