@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Schema Generator
  * Description: A framework plugin for generating schema markup with multiple configuration tabs.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: The Coding Bull
  * Text Domain: schema-generator
  */
