@@ -539,9 +539,6 @@ function homepage_generate_schema(){
                 $city_field = explode(',', $homepage_properties['areaServed-city']);
                 $city_field_name = $city_field[0];
                 $city_field_type = $city_field[1];
-                $province_field = explode(',', $homepage_properties['areaServed-province']);
-                $province_field_name = $province_field[0];
-                $province_field_type = $province_field[1];
                 $id_field = explode(',', $homepage_properties['areaServed-id']);
                 $id_field_name = $id_field[0];
                 $id_field_type = $id_field[1];
@@ -550,11 +547,6 @@ function homepage_generate_schema(){
                     if( !in_array(get_post_field($city_field_name), $areaServed)){
                         $single_areaServed['name'] = get_post_field($city_field_name);
                         $areaServed[] =get_post_field($city_field_name);
-                        if ($province_field_type == 'built-in') {
-                            $single_areaServed['addressRegion'] = get_post_field($province_field_name)??"";
-                        } elseif ($province_field_type == 'ACF') {
-                            $single_areaServed['addressRegion'] = get_field($province_field_name)??"";
-                        }
                         if ($id_field_type == 'built-in') {
                             $single_areaServed['sameAs'] = get_post_field($id_field_name)??"";
                         } elseif ($id_field_type == 'ACF') {
@@ -565,11 +557,6 @@ function homepage_generate_schema(){
                     if( !in_array(get_field($city_field_name), $areaServed)){
                         $single_areaServed['name'] = get_field($city_field_name);
                         $areaServed[] = get_field($city_field_name);
-                        if ($province_field_type == 'built-in') {
-                            $single_areaServed['addressRegion'] = get_post_field($province_field_name)??"";
-                        } elseif ($province_field_type == 'ACF') {
-                            $single_areaServed['addressRegion'] = get_field($province_field_name)??"";
-                        }
                         if ($id_field_type == 'built-in') {
                             $single_areaServed['sameAs'] = get_post_field($id_field_name)??"";
                         } elseif ($id_field_type == 'ACF') {
@@ -589,7 +576,7 @@ function homepage_generate_schema(){
     //Reviews
     $aggregateRating_schema = [];
     $aggregateRating_schema['@type'] = "AggregateRating";
-    $total_rating = 0;
+    //$total_rating = 0;
     $review_post_type = $wpdb->get_var(
         $wpdb->prepare(
             "SELECT value FROM $table_name WHERE page = %s and property = %s",
@@ -1099,6 +1086,7 @@ function service_area_generate_schema(){
             }
             //areaServed
             $areaServed=[];
+            $areaServed["@type"] = "City";
             if($saved_settings['service-area-city']){
                 $field = explode(',', $saved_settings['service-area-city']);
                 $field_name = $field[0];
@@ -1247,9 +1235,7 @@ function service_area_generate_schema(){
             
 
             //Reviews
-            $aggregateRating_schema = [];
-            $aggregateRating_schema['@type'] = "AggregateRating";
-            $total_rating = 0;
+            $aggregateRating_schema = get_aggregate_review();
             $review_post_type = $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT value FROM $table_name WHERE page = %s and property = %s",
@@ -1308,8 +1294,8 @@ function service_area_generate_schema(){
                     //         }
                     //     }
                     // }
-                    $aggregateRating_schema['ratingValue'] = 5;
-                    $aggregateRating_schema['reviewCount'] = $total_reviews;
+                }
+                if(isset($aggregateRating_schema)){
                     $schema['aggregateRating'] = $aggregateRating_schema;
                 }
                 
@@ -1881,6 +1867,7 @@ function service_general_generate_schema(){
 
                 $schema['address'] = $address;
                 $areaserved_schema = [];
+                $areaserved_schema["@type"] = "City";
                 if( $service_area_city){
                     $field = explode(',', $service_area_city );
                     $field_name = $field[0];
@@ -2241,9 +2228,7 @@ function service_general_generate_schema(){
             }
             wp_reset_postdata();
             //Reviews
-            $aggregateRating_schema = [];
-            $aggregateRating_schema['@type'] = "AggregateRating";
-            $total_rating = 0;
+            $aggregateRating_schema = get_aggregate_review();
             $review_post_type = $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT value FROM $table_name WHERE page = %s and property = %s",
@@ -2323,8 +2308,8 @@ function service_general_generate_schema(){
                     //         }
                     //     }
                     // }
-                    $aggregateRating_schema['ratingValue'] = 5;
-                    $aggregateRating_schema['reviewCount'] = $total_reviews;
+                }
+                if(isset($aggregateRating_schema)){
                     $schema['aggregateRating'] = $aggregateRating_schema;
                 }
             }
@@ -2872,6 +2857,7 @@ function service_capability_generate_schema(){
 
                 $schema['address'] = $address;
                 $areaserved_schema = [];
+                $areaserved_schema["@type"] = "City";
                 if( $service_area_city){
                     $field = explode(',', $service_area_city );
                     $field_name = $field[0];
@@ -3079,9 +3065,7 @@ function service_capability_generate_schema(){
             }
 
             //Reviews
-            $aggregateRating_schema = [];
-            $aggregateRating_schema['@type'] = "AggregateRating";
-            $total_rating = 0;
+            $aggregateRating_schema = get_aggregate_review();
             $review_post_type = $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT value FROM $table_name WHERE page = %s and property = %s",
@@ -3161,8 +3145,9 @@ function service_capability_generate_schema(){
                     //         }
                     //     }
                     // }
-                    $aggregateRating_schema['ratingValue'] = 5;
-                    $aggregateRating_schema['reviewCount'] = $total_reviews;
+                    
+                }
+                if(isset($aggregateRating_schema)){
                     $schema['aggregateRating'] = $aggregateRating_schema;
                 }
             }
@@ -3428,4 +3413,33 @@ function get_faq_object($post_id, $faq, $question, $answer) {
         '@type' => "FAQPage",
         'mainEntity' => $result
     ];
+}
+
+//Aggregate Review
+function get_aggregate_review() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'tcb_schema';
+
+    $aggregateRating_schema = [];
+    $aggregateRating_schema['@type'] = "AggregateRating";
+
+    $review_post_type = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT value FROM $table_name WHERE page = %s AND property = %s",
+            'global',
+            'review_posttype'
+        )
+    );
+
+    if (!empty($review_post_type)) {
+
+        $total_reviews = wp_count_posts($review_post_type)->publish;
+
+        $aggregateRating_schema['ratingValue'] = 5; 
+        $aggregateRating_schema['reviewCount'] = $total_reviews;
+
+        return $aggregateRating_schema;
+    }
+
+    return null;
 }
