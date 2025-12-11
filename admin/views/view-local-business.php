@@ -264,6 +264,9 @@ $average_rating = round($average_rating, 1);
                 <option value="HomeAndConstructionBusiness">Home And Construction Business</option>
                 <option value="MedicalBusiness">Medical Business</option>
             </select>
+            <div>
+                <label>Business Type: </label><br/><input name="businessType-text" type="text"/>
+            </div>
         </div>
 
         <div>
@@ -350,6 +353,47 @@ $average_rating = round($average_rating, 1);
             <div>
                 <label>sameAs</label>
                 <select name="areaServed-id" id="schema-generator-areaServed-id">
+                    <option value="" selected>Select field name</option>
+                    <?php foreach($all_fields as $slug => $label): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+        <div style="display:<?echo $global_setting_address?"none":"flex"?>; flex-direction:column; gap:8px;"  style="display:<?echo $global_setting_address?"block":"none"?>;" >
+            <label>Address</label>
+            <div>
+                <label>Street Address</label>
+                <select name="address-street">
+                    <option value="" selected>Select field name</option>
+                    <?php foreach($all_fields as $slug => $label): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label>City</label>
+                <select name="address-city">
+                    <option value="" selected>Select field name</option>
+                    <?php foreach($all_fields as $slug => $label): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label>Province</label>
+                <select name="address-province">
+                    <option value="" selected>Select field name</option>
+                    <?php foreach($all_fields as $slug => $label): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <div>
+                <label>Postal code</label>
+                <select name="address-postal">
                     <option value="" selected>Select field name</option>
                     <?php foreach($all_fields as $slug => $label): ?>
                         <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>

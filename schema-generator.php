@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Schema Generator
  * Description: A framework plugin for generating schema markup with multiple configuration tabs.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: The Coding Bull
  * Text Domain: schema-generator
  */
@@ -43,6 +43,10 @@ register_activation_hook(__FILE__, 'create_tcb_schema_table');
 
 // Load API handler
 require_once plugin_dir_path(__FILE__) . 'admin/API/schema-generator-api.php';
+require_once plugin_dir_path(__FILE__) . 'admin/API/schema-generator-local-business-api.php';
+require_once plugin_dir_path(__FILE__) . 'admin/API/schema-generator-service-area-api.php';
+require_once plugin_dir_path(__FILE__) . 'admin/API/schema-generator-service-general-api.php';
+require_once plugin_dir_path(__FILE__) . 'admin/API/schema-generator-service-capability-api.php';
 
 add_action('admin_enqueue_scripts', function($hook) {
     // Only enqueue on your plugin page, optional:

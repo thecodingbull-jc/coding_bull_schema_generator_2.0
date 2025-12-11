@@ -79,7 +79,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
 
         <div>
             <label>Name</label><br>
-            <select name="service-general-name" id="schema-generator-service-general-name">
+            <select name="service-general-name">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
@@ -89,17 +89,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
 
         <div>
             <label>Description</label><br>
-            <select name="service-general-description" id="schema-generator-service-general-description">
-                <option value="" selected>Select field name</option>
-                <?php foreach($all_fields as $slug => $label): ?>
-                    <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div>
-            <label>Keywords</label><br>
-            <select name="service-general-keywords" id="schema-generator-service-general-keywords">
+            <select name="service-general-description" >
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
@@ -119,15 +109,6 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 </select>
             </div>
             
-            <div>
-                <label>hasOfferCatalog Description</label><br>
-                <select name="capability-hasOfferCatalog-description" id="schema-generator-capability-hasOfferCatalog-description">
-                    <option value="" selected>Select field name</option>
-                    <?php foreach($all_fields as $slug => $label): ?>
-                        <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
         </div>
 
     </div>  

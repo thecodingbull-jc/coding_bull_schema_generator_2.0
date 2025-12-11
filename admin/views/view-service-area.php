@@ -191,10 +191,10 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
 
         <div id="schema-generator-service-area-address-section"  >
             <label>Address</label></br>
-            <div>
+            <!-- <div>
                 <input id="schema-generator-has-street-address-checkbox" name="hasStreetAddress" type="checkbox" checked/>
                 <label>Has street address?</label>
-            </div>
+            </div> -->
             <div id="schema-generator-service-area-street-address"><label>Street Address: </label></br>
             <select name="service-area-street-address">
                 <option value="" selected>Select field name</option>
@@ -335,7 +335,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                             }
                         });
                         //generateSchema(response.data);
-                        toggleAddressSection();
+                        //toggleAddressSection();
                         hideLoading();
                     } else {
                         console.error('Error:', response.data.message);
@@ -405,19 +405,19 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
             });
 
             // Function to toggle address section
-            function toggleAddressSection() {
-                if ($('#schema-generator-has-street-address-checkbox').is(':checked')) {
-                    $('#schema-generator-service-area-street-address').show();
-                    $('#schema-generator-service-area-amenity-feature').show();
-                } else {
-                    $('#schema-generator-service-area-street-address').hide();
-                    $('#schema-generator-service-area-amenity-feature').hide();
-                }
-            }
+            // function toggleAddressSection() {
+            //     if ($('#schema-generator-has-street-address-checkbox').is(':checked')) {
+            //         $('#schema-generator-service-area-street-address').show();
+            //         $('#schema-generator-service-area-amenity-feature').show();
+            //     } else {
+            //         $('#schema-generator-service-area-street-address').hide();
+            //         $('#schema-generator-service-area-amenity-feature').hide();
+            //     }
+            // }
             // Run whenever checkbox changes
-            $('#schema-generator-has-street-address-checkbox').on('change', function() {
-                    toggleAddressSection();
-            });
+            // $('#schema-generator-has-street-address-checkbox').on('change', function() {
+            //         toggleAddressSection();
+            // });
             
         });
     </script>
