@@ -328,59 +328,59 @@ function service_capability_generate_schema(){
                     }
                     $schema['areaServed'] = $areaserved_schema;
                     //address
-                    $address = [];
-                    if($service_area_street){
-                        $field = explode(',', $service_area_street);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $street_address = get_post_field($field_name,$service_area_id);
-                            if($street_address){
-                                $address['streetAddress'] = $street_address;
-                            }
+                    // $address = [];
+                    // if($service_area_street){
+                    //     $field = explode(',', $service_area_street);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $street_address = get_post_field($field_name,$service_area_id);
+                    //         if($street_address){
+                    //             $address['streetAddress'] = $street_address;
+                    //         }
                             
-                        } elseif ($field_type == 'ACF') {
-                            $street_address = get_field($field_name,$service_area_id);
-                            if($street_address){
-                                $address['streetAddress'] = $street_address;
-                            }
-                        }
-                    }
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $street_address = get_field($field_name,$service_area_id);
+                    //         if($street_address){
+                    //             $address['streetAddress'] = $street_address;
+                    //         }
+                    //     }
+                    // }
                     
-                    if($service_area_city){
-                        $field = explode(',', $service_area_city);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $address['addressLocality'] = get_post_field($field_name,$service_area_id);
-                        } elseif ($field_type == 'ACF') {
-                            $address['addressLocality'] = get_field($field_name,$service_area_id);
-                        }
-                    }
-                    if($service_area_province){
-                        $field = explode(',', $service_area_province);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $address['addressRegion'] = get_post_field($field_name,$service_area_id);
-                        } elseif ($field_type == 'ACF') {
-                            $address['addressRegion'] = get_field($field_name,$service_area_id);
-                        }
-                    }
-                    if($service_area_postal){
-                        $field = explode(',', $service_area_postal);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $address['postalCode'] = get_post_field($field_name,$service_area_id);
-                        } elseif ($field_type == 'ACF') {
-                            $address['postalCode'] = get_field($field_name,$service_area_id);
-                        }
-                    }
+                    // if($service_area_city){
+                    //     $field = explode(',', $service_area_city);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['addressLocality'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['addressLocality'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
+                    // if($service_area_province){
+                    //     $field = explode(',', $service_area_province);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['addressRegion'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['addressRegion'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
+                    // if($service_area_postal){
+                    //     $field = explode(',', $service_area_postal);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['postalCode'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['postalCode'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
 
-                    if($address["streetAddress"]){
-                        $schema['address'] = $address;
-                    }
+                    // if($address["streetAddress"]){
+                    //     $schema['address'] = $address;
+                    // }
                     //Branch schema
                     $branch_schema = [];
                     $home_businessType = $wpdb->get_var(
