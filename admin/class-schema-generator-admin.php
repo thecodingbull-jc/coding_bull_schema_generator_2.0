@@ -46,10 +46,11 @@ class Schema_Generator_Admin {
 			'service-area'          => 'Service Area Pages',
 			'service-general'       => 'Service General Pages',
 			'service-capability'    => 'Service Capability Pages',
+			'blog-schema'    		=> 'Blog Pages',
+			'past-project-schema'   => 'Past Project Pages',
 			'review-snippet'        => 'Review Snippet',
 			'faq-snippet'           => 'FAQ Snippet',
 			'employee-snippet'      => 'Employee Snippet',
-			//'custom-schema'         => 'Custom Schema'
 		];
 
 		$current_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'global-settings';

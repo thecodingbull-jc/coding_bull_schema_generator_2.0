@@ -173,7 +173,6 @@ function tcb_schema_get_selected_posts($property_name) {
                 
             </div>
 
-            
             <div>
                 <label>Review Pages Definition: </label>
                 <select id="schema-generator-review-page-definition" name="schema-generator-review-page-definition">
@@ -193,6 +192,18 @@ function tcb_schema_get_selected_posts($property_name) {
                     <?php foreach ($post_types as $slug => $obj): ?>
                         <option value="<?php echo esc_attr($slug); ?>"
                             <?php selected($saved_settings['employee_posttype'] ?? '', $slug); ?>>
+                            <?php echo esc_html($obj->labels->singular_name); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div> 
+            <div>
+                <label>Past Project Pages Definition: </label>
+                <select id="schema-generator-past-project-page-definition" name="schema-generator-past-project-page-definition">
+                    <option value="">Select a post type</option>
+                    <?php foreach ($post_types as $slug => $obj): ?>
+                        <option value="<?php echo esc_attr($slug); ?>"
+                            <?php selected($saved_settings['past_project_posttype'] ?? '', $slug); ?>>
                             <?php echo esc_html($obj->labels->singular_name); ?>
                         </option>
                     <?php endforeach; ?>
@@ -346,6 +357,7 @@ jQuery(document).ready(function($){
                 manual_service_area_posts:getSelectedPostsByDiv("sc_select_service_area_pages"),
                 manual_service_general_posts:getSelectedPostsByDiv("sc_select_service_general_pages"),
                 manual_service_capability_posts:getSelectedPostsByDiv("sc_select_service_capability_pages"),
+                past_project_posttype: $('#schema-generator-past-project-page-definition').val(),
             }
         };
         console.log(data);

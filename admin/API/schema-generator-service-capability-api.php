@@ -121,6 +121,16 @@ function service_capability_generate_schema(){
     }else{
         $manual_service_capability_posts = [];
     }
+
+    //fetch blog name
+    $blog_name = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT value FROM $table_name WHERE page = %s and property = %s",
+            'blog',
+            'name'
+        )
+    );
+
     //fetch all posts
     if($post_type!=""){
         $post_args = [
@@ -327,60 +337,6 @@ function service_capability_generate_schema(){
                         }
                     }
                     $schema['areaServed'] = $areaserved_schema;
-                    //address
-                    // $address = [];
-                    // if($service_area_street){
-                    //     $field = explode(',', $service_area_street);
-                    //     $field_name = $field[0];
-                    //     $field_type = $field[1];
-                    //     if ($field_type == 'built-in') {
-                    //         $street_address = get_post_field($field_name,$service_area_id);
-                    //         if($street_address){
-                    //             $address['streetAddress'] = $street_address;
-                    //         }
-                            
-                    //     } elseif ($field_type == 'ACF') {
-                    //         $street_address = get_field($field_name,$service_area_id);
-                    //         if($street_address){
-                    //             $address['streetAddress'] = $street_address;
-                    //         }
-                    //     }
-                    // }
-                    
-                    // if($service_area_city){
-                    //     $field = explode(',', $service_area_city);
-                    //     $field_name = $field[0];
-                    //     $field_type = $field[1];
-                    //     if ($field_type == 'built-in') {
-                    //         $address['addressLocality'] = get_post_field($field_name,$service_area_id);
-                    //     } elseif ($field_type == 'ACF') {
-                    //         $address['addressLocality'] = get_field($field_name,$service_area_id);
-                    //     }
-                    // }
-                    // if($service_area_province){
-                    //     $field = explode(',', $service_area_province);
-                    //     $field_name = $field[0];
-                    //     $field_type = $field[1];
-                    //     if ($field_type == 'built-in') {
-                    //         $address['addressRegion'] = get_post_field($field_name,$service_area_id);
-                    //     } elseif ($field_type == 'ACF') {
-                    //         $address['addressRegion'] = get_field($field_name,$service_area_id);
-                    //     }
-                    // }
-                    // if($service_area_postal){
-                    //     $field = explode(',', $service_area_postal);
-                    //     $field_name = $field[0];
-                    //     $field_type = $field[1];
-                    //     if ($field_type == 'built-in') {
-                    //         $address['postalCode'] = get_post_field($field_name,$service_area_id);
-                    //     } elseif ($field_type == 'ACF') {
-                    //         $address['postalCode'] = get_field($field_name,$service_area_id);
-                    //     }
-                    // }
-
-                    // if($address["streetAddress"]){
-                    //     $schema['address'] = $address;
-                    // }
                     //Branch schema
                     $branch_schema = [];
                     $home_businessType = $wpdb->get_var(
@@ -484,7 +440,50 @@ function service_capability_generate_schema(){
                     $schema['aggregateRating'] = $aggregateRating_schema;
                 }
             }
+            // Blog
+            $service_terms = wp_get_post_terms($post_id, $service_slug, ['fields' => 'ids']);
+            if (!empty($terms) && !is_wp_error($terms)) {
+                $blog_args = [
+                    'post_type'      => 'post',
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'tax_query'      => [
+                        [
+                            'taxonomy' => $service_slug,
+                            'field'    => 'term_id',
+                            'terms'    => $service_terms,
+                        ],
+                    ],
+                ];
+            }
 
+            $blog_query = new WP_Query($blog_args);
+            if ($blog_query->have_posts()) {
+                $blog_schema = [];
+                
+                while ($blog_query->have_posts()) {
+                    $blog_query->the_post();  
+                    $blog_id = get_the_ID();
+                    $single_blog = [];
+                    $single_blog['@type'] = "WebPage";
+                    $blog_url = get_permalink($blog_id);
+                    $single_blog['@id'] = $blog_url . "#article";
+                    $single_blog['url'] = $blog_url;
+                    if($blog_name){
+                        $field = explode(',', $blog_name);
+                        $field_name = $field[0];
+                        $field_type = $field[1];
+                        if ($field_type == 'built-in') {
+                            $single_blog['name'] = get_post_field($field_name);
+                        } elseif ($field_type == 'ACF') {
+                            $single_blog['name'] = get_field($field_name);
+                        }
+                    }
+                    $blog_schema[] = $single_blog;
+                }   
+                wp_reset_postdata();
+                $schema["isRelatedTo"] = $blog_schema;
+            }
             //FAQ
             $faq = $wpdb->get_var(
                 $wpdb->prepare(
@@ -518,7 +517,7 @@ function service_capability_generate_schema(){
 
         wp_send_json_success([
             'schema' => $results,
-            //"testing" => $service_area_street
+            "testing" => $blog_query
         ]);
     }
 }

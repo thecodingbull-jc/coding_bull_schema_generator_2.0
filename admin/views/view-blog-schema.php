@@ -11,22 +11,22 @@ $builtin_fields = array(
     'post_name,built-in'    => 'Slug',
 );
 
-// fetch post type's ACF field groups for service capability page
+// fetch post type's ACF field groups for service general page
 global $wpdb;
 $schema_table_name = $wpdb->prefix . 'tcb_schema'; 
 
-$service_capability_post_type = $wpdb->get_var(
+$service_post_type = $wpdb->get_var(
     $wpdb->prepare(
         "SELECT value FROM $schema_table_name WHERE page = %s AND property = %s",
         'global',
-        'service_capability_posttype'
+        'service_general_posttype'
     )
 );
 
 $acf_fields = array();
 $taxonomy_fields = array();
-if($service_capability_post_type){
-    $field_groups = acf_get_field_groups(array('post_type' => $service_capability_post_type));
+if($service_post_type){
+    $field_groups = acf_get_field_groups(array('post_type' => $service_post_type));
 
     if($field_groups){
         foreach($field_groups as $group){
@@ -38,48 +38,33 @@ if($service_capability_post_type){
             }
         }
     }
-
-    $taxonomies = get_object_taxonomies($service_capability_post_type, 'objects');
-
-    if($taxonomies){
-        foreach($taxonomies as $taxonomy){
-            $taxonomy_fields[$taxonomy->name . ',taxonomy' ] = $taxonomy->label . "(Taxonomy)";
-        }
-    }
-}else{
-    $field_groups = acf_get_field_groups();
-
-    foreach ($field_groups as $group) {
-        // Get all fields for this group
-        $fields = acf_get_fields($group['ID']);
-        
-        foreach ($fields as $field) {
-            $acf_fields[$field['name'] . ',ACF'] = $field['label'] . "(ACF)"; 
-        }
-    }
-
-    $taxonomies = get_taxonomies([], 'objects'); // get all taxonomies as objects
-
-    foreach ($taxonomies as $taxonomy) {
-        $taxonomy_fields[$taxonomy->name . ',taxonomy' ] = $taxonomy->label . "(Taxonomy)";
-    }
 }
 
-$all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
+$all_fields = array_merge($builtin_fields, $acf_fields);
+
+$taxonomy_fields = array();
+
+$taxonomies = get_object_taxonomies("post", 'objects');
+
+if($taxonomies){
+    foreach($taxonomies as $taxonomy){
+        $taxonomy_fields[$taxonomy->name] = $taxonomy->label . "(Taxonomy)";
+    }
+}
 
 ?>
 <div class="schema-generator-section" style="display:flex; gap:32px; height:1000px;">
     <div style="display:flex; flex-direction:column; gap:20px; width:50%;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2>Service capability Pages</h2>
+            <h2>Blogs</h2>
             <div style="display:flex; gap:16px;">
-                <button id="schema-generator-service-capability-save-btn" class="button button-primary">Save</button>
+                <button id="schema-generator-blog-save-btn" class="button button-primary">Save</button>
             </div>
         </div>
 
         <div>
-            <label>Name</label><br>
-            <select name="service-capability-name" id="schema-generator-service-capability-name">
+            <label>Headline</label><br>
+            <select name="headline">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
@@ -89,7 +74,27 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
 
         <div>
             <label>Description</label><br>
-            <select name="service-capability-description" id="schema-generator-service-capability-description">
+            <select name="description">
+                <option value="" selected>Select field name</option>
+                <?php foreach($all_fields as $slug => $label): ?>
+                    <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div>
+            <label>Article selection</label><br>
+            <select name="article-selection">
+                <option value="" selected>Select field name</option>
+                <?php foreach($taxonomy_fields as $slug => $label): ?>
+                    <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        
+        <div>
+            <label>Publish date</label><br>
+            <select name="publish-date">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
@@ -100,11 +105,12 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
     </div>  
     <div style="width:50%;">
             <h4>Schema Example</h4>
-            <textarea id="schema-generator-service-capability-schema-result" style="display:block; width:100%; height:calc(100% - 18px); background:white; margin-top:20px; border-radius:20px; padding:16px;" readonly>
+            <textarea id="schema-generator-blog-schema-result" style="display:block; width:100%; height:calc(100% - 18px); background:white; margin-top:20px; border-radius:20px; padding:16px;" readonly>
             
             </textarea>
     </div>  
 </div>
+
 <style>
     .schema-generator-section input:not([type="checkbox"]){
         width:100%;
@@ -115,6 +121,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
     }
 </style>
 
+
 <script>
     jQuery(document).ready(function($) {
         //hideLoading();
@@ -122,7 +129,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
             url: schemaAjax.ajax_url, // WordPress AJAX URL
             method: 'POST',
             data: {
-                action: 'service_capability_generate_schema', // AJAX action name
+                action: 'blog_generate_schema', // AJAX action name
                 nonce: schemaAjax.nonce // Security nonce
             },
             success: function(response) {
@@ -131,7 +138,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                     response.data.schema.forEach(element => {
                         console.log(JSON.parse(element));
                         if(done == 0 ){
-                            $('#schema-generator-service-capability-schema-result').val(JSON.stringify(JSON.parse(element),null,2));
+                            $('#schema-generator-blog-schema-result').val(JSON.stringify(JSON.parse(element),null,2));
                             done++;
                         }
                     });
@@ -144,7 +151,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
             method: 'POST',
             data: {
                 action: 'get_schema_by_page', // AJAX action name
-                page: "service-capability",                  // Page value to query
+                page: "blog",                  // Page value to query
                 nonce: schemaAjax.nonce // Security nonce
             },
             success: function(response) {
@@ -175,10 +182,10 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
         });
 
         //handle save button
-        $('#schema-generator-service-capability-save-btn').on('click', function(e) {
+        $('#schema-generator-blog-save-btn').on('click', function(e) {
             e.preventDefault();
 
-            let page = 'service-capability';
+            let page = 'blog';
             let data = [];
 
 

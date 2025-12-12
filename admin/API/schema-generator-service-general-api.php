@@ -240,7 +240,7 @@ function service_general_generate_schema(){
                 $schema["logo"] = $home_logo;
             }
             
-            $schema['@id'] = get_post_permalink($post_id) . '#localbusiness';
+            $schema['@id'] = get_post_permalink($post_id) . '#service';
             $schema['url'] = get_post_permalink($post_id);
 
             //name
@@ -364,40 +364,40 @@ function service_general_generate_schema(){
                     //     }
                     // }
                     
-                    if($service_area_city){
-                        $field = explode(',', $service_area_city);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $address['addressLocality'] = get_post_field($field_name,$service_area_id);
-                        } elseif ($field_type == 'ACF') {
-                            $address['addressLocality'] = get_field($field_name,$service_area_id);
-                        }
-                    }
-                    if($service_area_province){
-                        $field = explode(',', $service_area_province);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $address['addressRegion'] = get_post_field($field_name,$service_area_id);
-                        } elseif ($field_type == 'ACF') {
-                            $address['addressRegion'] = get_field($field_name,$service_area_id);
-                        }
-                    }
-                    if($service_area_postal){
-                        $field = explode(',', $service_area_postal);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $address['postalCode'] = get_post_field($field_name,$service_area_id);
-                        } elseif ($field_type == 'ACF') {
-                            $address['postalCode'] = get_field($field_name,$service_area_id);
-                        }
-                    }
+                    // if($service_area_city){
+                    //     $field = explode(',', $service_area_city);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['addressLocality'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['addressLocality'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
+                    // if($service_area_province){
+                    //     $field = explode(',', $service_area_province);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['addressRegion'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['addressRegion'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
+                    // if($service_area_postal){
+                    //     $field = explode(',', $service_area_postal);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['postalCode'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['postalCode'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
 
-                    if($address["streetAddress"]){
-                        $schema['address'] = $address;
-                    }
+                    // if($address["streetAddress"]){
+                    //     $schema['address'] = $address;
+                    // }
                     //Branch schema
                     $branch_schema = [];
                     $home_businessType = $wpdb->get_var(
@@ -547,7 +547,7 @@ function service_general_generate_schema(){
                             $single_service['name'] = get_field($field_name);
                         }
                     }
-                    $single_service['@id'] = get_post_permalink(get_the_ID()) . '#localbusiness';
+                    $single_service['@id'] = get_post_permalink(get_the_ID()) . '#service';
                     $single_service['url'] = get_post_permalink(get_the_ID());
                     $service_result[] = $single_service;
                 }
