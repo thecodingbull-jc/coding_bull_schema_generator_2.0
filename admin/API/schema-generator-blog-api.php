@@ -234,7 +234,7 @@ function blog_generate_schema(){
             $organization_schema["url"] =  home_url('/');
                         
             $schema["@graph"] = [$blog_schema,$organization_schema];
-            update_post_meta($post_id, '_injected_script',  json_encode($final_schema));
+            update_post_meta($post_id, '_injected_script',  json_encode($schema));
             $results[] = json_encode($schema);
         }
         wp_reset_postdata();

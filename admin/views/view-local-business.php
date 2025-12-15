@@ -279,6 +279,10 @@ $average_rating = round($average_rating, 1);
         <div>
             <label>Telephones(Seperate by comma): </label><br/><textarea name="telephone" style="height:100px;"></textarea>
         </div>
+
+         <div>
+            <label>Social media(Seperate by comma): </label><br/><textarea name="social-media" style="height:100px;"></textarea>
+        </div>
         
         
 

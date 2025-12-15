@@ -5,131 +5,70 @@ add_action('wp_ajax_service_capability_generate_schema', 'service_capability_gen
 function service_capability_generate_schema(){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
-    $post_type = $wpdb->get_var(
+    $schema=[];
+    //fetch global setting
+    $global_rows = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_posttype'
-        )
-    );
-    $post_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_taxonomy'
-        )
-    );
-    $post_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_term'
-        )
-    );
-    $service_area_slug = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_taxonomy_slug'
-        )
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'global'
+        ),
+        ARRAY_A
     );
 
-    $service_slug = $wpdb->get_var(
+    $global_settings = [];
+    if ( ! empty( $global_rows ) ) {
+        foreach ( $global_rows as $row ) {
+            $global_settings[ $row['property'] ] = $row['value'];
+        }
+    }
+    //get homepage properties
+    $homepage_properties = [];
+    $homepage_properties_rows = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_taxonomy_slug'
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'home_page'
         )
     );
+    foreach ($homepage_properties_rows as $row){
+        $homepage_properties[ $row->property ] = $row->value;
+    }
+    //get service area properties
+    $service_area_settings = [];
+    $service_area_rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'service-area'
+        )
+    );
+    foreach ($service_area_rows as $row){
+        $service_area_settings[ $row->property ] = $row->value;
+    }
+
+    $post_type =$global_settings['service_capability_posttype'];
+    $post_taxo = $global_settings['service_capability_taxonomy'];
+    $post_term = $global_settings['service_capability_term'];
+    $service_capability_post_type = $global_settings['service_capability_posttype'];
+    $service_capability_taxo = $global_settings['service_capability_taxonomy'];
+    $service_capability_term = $global_settings['service_capability_term'];
+    $service_area_slug = $global_settings['service_area_taxonomy_slug'];
+    $service_slug = $global_settings['service_taxonomy_slug'];
+    $single_address = $global_settings['single_location'];
+    $service_area_post_type = $global_settings['service_area_posttype'];
+    $service_area_taxo = $global_settings['service_area_taxonomy'];
+    $service_area_term = $global_settings['service_area_term'];
     
-    $single_address = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s AND property = %s",
-            'global',
-            'single_location'
-        )
-    );
-
-    $service_area_post_type = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_posttype'
-        )
-    );
-    $service_area_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_taxonomy'
-        )
-    );
-    $service_area_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_term'
-        )
-    );
-    
-    $service_area_name = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-name'
-        )
-    );
-
-    $service_area_street = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-street-address'
-        )
-    );
-    $service_area_city = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-city'
-        )
-    );
-    $service_area_province = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-province'
-        )
-    );
-    $service_area_postal = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-postal-code'
-        )
-    );
-
-    $manual_service_capability_posts = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'manual_service_capability_posts'
-        )
-    );
+    $service_area_name = $service_area_settings['service-area-name'];
+    $service_area_street = $service_area_settings['service-area-street-address'];
+    $service_area_city =  $service_area_settings['service-area-city'];
+    $service_area_province =  $service_area_settings['service-area-province'];
+    $service_area_postal =  $service_area_settings['service-area-postal-code'];
+    $manual_service_capability_posts =  $global_settings['manual_service_capability_posts'];
     if(isset($manual_service_capability_posts)){
         $manual_service_capability_posts = json_decode(stripslashes($manual_service_capability_posts),true);
     }else{
         $manual_service_capability_posts = [];
     }
 
-    //fetch blog name
-    $blog_name = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'blog',
-            'name'
-        )
-    );
 
     //fetch all posts
     if($post_type!=""){
@@ -226,7 +165,7 @@ function service_capability_generate_schema(){
                 $schema["logo"] = $home_logo;
             }
             
-            $schema['@id'] = get_post_permalink($post_id) . '#localbusiness';
+            $schema['@id'] = get_post_permalink($post_id) . '#service';
             $schema['url'] = get_post_permalink($post_id);
 
             //name
@@ -252,7 +191,7 @@ function service_capability_generate_schema(){
                 }
             }
 
-             //Service Type
+            //Service Type
             if($service_slug){
                 $service_type_terms = get_the_terms( $post_id, $service_slug );
                 if(isset($service_type_terms)){
@@ -297,13 +236,6 @@ function service_capability_generate_schema(){
                 if ($service_area_query->have_posts()) {
                     $service_area_id = $service_area_query->posts[0];
                     $service_area_url = get_post_permalink($service_area_id);
-                    $service_area_city = $wpdb->get_var(
-                        $wpdb->prepare(
-                            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-                            'service-area',
-                            'service-area-city'
-                        )
-                    );
                     $service_area_areaserved_id = $wpdb->get_var(
                         $wpdb->prepare(
                             "SELECT value FROM $table_name WHERE page = %s and property = %s",
@@ -312,7 +244,7 @@ function service_capability_generate_schema(){
                         )
                     );
                     //provider
-                    $schema['provider'] = ["@id" => $service_area_url . '#localbusiness'];
+                    $schema['provider'] = ["@id" => $service_area_url . '#localbusiness',"url" => $service_area_url];
                     //areaServce
                     $areaserved_schema = [];
                     $areaserved_schema["@type"] = "City";
@@ -337,6 +269,60 @@ function service_capability_generate_schema(){
                         }
                     }
                     $schema['areaServed'] = $areaserved_schema;
+                    //address
+                    // $address = [];
+                    // if($service_area_street){
+                    //     $field = explode(',', $service_area_street);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $street_address = get_post_field($field_name,$service_area_id);
+                    //         if($street_address){
+                    //             $address['streetAddress'] = $street_address;
+                    //         }
+                            
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $street_address = get_field($field_name,$service_area_id);
+                    //         if($street_address){
+                    //             $address['streetAddress'] = $street_address;
+                    //         }
+                    //     }
+                    // }
+                    
+                    // if($service_area_city){
+                    //     $field = explode(',', $service_area_city);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['addressLocality'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['addressLocality'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
+                    // if($service_area_province){
+                    //     $field = explode(',', $service_area_province);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['addressRegion'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['addressRegion'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
+                    // if($service_area_postal){
+                    //     $field = explode(',', $service_area_postal);
+                    //     $field_name = $field[0];
+                    //     $field_type = $field[1];
+                    //     if ($field_type == 'built-in') {
+                    //         $address['postalCode'] = get_post_field($field_name,$service_area_id);
+                    //     } elseif ($field_type == 'ACF') {
+                    //         $address['postalCode'] = get_field($field_name,$service_area_id);
+                    //     }
+                    // }
+
+                    // if($address["streetAddress"]){
+                    //     $schema['address'] = $address;
+                    // }
                     //Branch schema
                     $branch_schema = [];
                     $home_businessType = $wpdb->get_var(
@@ -369,8 +355,11 @@ function service_capability_generate_schema(){
                     $branch_schema["@id"] = $service_area_url . '#localbusiness';
                     $branch_schema["url"] = $service_area_url;
                 }
+            }else{
+                //provider from home page if single location
+                $schema['provider'] = ["@id" => home_url() . '/#localbusiness',"url" => home_url() , 'name' => $homepage_properties['name']];
             }
-        
+           
             //Reviews
             $aggregateRating_schema = get_aggregate_review();
             $review_post_type = $wpdb->get_var(
@@ -440,50 +429,7 @@ function service_capability_generate_schema(){
                     $schema['aggregateRating'] = $aggregateRating_schema;
                 }
             }
-            // Blog
-            $service_terms = wp_get_post_terms($post_id, $service_slug, ['fields' => 'ids']);
-            if (!empty($terms) && !is_wp_error($terms)) {
-                $blog_args = [
-                    'post_type'      => 'post',
-                    'post_status'    => 'publish',
-                    'posts_per_page' => -1,
-                    'tax_query'      => [
-                        [
-                            'taxonomy' => $service_slug,
-                            'field'    => 'term_id',
-                            'terms'    => $service_terms,
-                        ],
-                    ],
-                ];
-            }
 
-            $blog_query = new WP_Query($blog_args);
-            if ($blog_query->have_posts()) {
-                $blog_schema = [];
-                
-                while ($blog_query->have_posts()) {
-                    $blog_query->the_post();  
-                    $blog_id = get_the_ID();
-                    $single_blog = [];
-                    $single_blog['@type'] = "WebPage";
-                    $blog_url = get_permalink($blog_id);
-                    $single_blog['@id'] = $blog_url . "#article";
-                    $single_blog['url'] = $blog_url;
-                    if($blog_name){
-                        $field = explode(',', $blog_name);
-                        $field_name = $field[0];
-                        $field_type = $field[1];
-                        if ($field_type == 'built-in') {
-                            $single_blog['name'] = get_post_field($field_name);
-                        } elseif ($field_type == 'ACF') {
-                            $single_blog['name'] = get_field($field_name);
-                        }
-                    }
-                    $blog_schema[] = $single_blog;
-                }   
-                wp_reset_postdata();
-                $schema["isRelatedTo"] = $blog_schema;
-            }
             //FAQ
             $faq = $wpdb->get_var(
                 $wpdb->prepare(
@@ -517,7 +463,6 @@ function service_capability_generate_schema(){
 
         wp_send_json_success([
             'schema' => $results,
-            "testing" => $blog_query
         ]);
     }
 }

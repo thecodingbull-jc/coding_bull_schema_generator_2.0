@@ -150,22 +150,25 @@ function past_project_generate_schema(){
             $service_area_post_type = $global_settings['service_area_posttype'];
             $service_area_taxonomy = $global_settings['service_area_taxonomy'];
             $service_area_term = $global_settings['service_area_term'];
+            $tax_query = array(
+                'relation' => 'AND',
+                array(
+                    'taxonomy' => $service_area_taxonomy_slug,
+                    'field'    => 'term_id',
+                    'terms'    => $service_area_terms,
+                ),
+            );
+            if(isset($service_area_taxonomy ) && isset($service_area_term )){
+                $tax_query[] = array(
+                    'taxonomy' => $service_area_taxonomy,
+                    'field'    => 'term_id', 
+                    'terms'    => $service_area_term,
+                );
+            }
             $service_area_args = array(
                 'post_type' => $service_area_post_type,
                 'posts_per_page' => -1,
-                'tax_query' => array(
-                    'relation' => 'AND',
-                    array(
-                        'taxonomy' => $service_area_taxonomy,
-                        'field'    => 'term_id', 
-                        'terms'    => $service_area_term,
-                    ),
-                    array(
-                        'taxonomy' => $service_area_taxonomy_slug,
-                        'field'    => 'term_id',
-                        'terms'    => $service_area_terms,
-                    ),
-                ),
+                'tax_query' => $tax_query
             );
 
             $service_area_query = new WP_Query( $service_area_args );
@@ -202,7 +205,8 @@ function past_project_generate_schema(){
     //     wp_reset_postdata();
         wp_send_json_success([
             'schema' => $results,
-            //'testing'=> $service_area_args
+            'testing'=> $service_area_args,
+            'testing2'=> $service_area_query
         ]);
 
     }

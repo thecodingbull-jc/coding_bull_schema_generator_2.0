@@ -7,55 +7,35 @@ add_action('wp_ajax_service_area_generate_schema', 'service_area_generate_schema
 function service_area_generate_schema(){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
-    $post_type = $wpdb->get_var(
+
+    
+    //fetch global setting
+    $global_rows = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_posttype'
-        )
-    );
-    $post_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_taxonomy'
-        )
-    );
-    $post_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_term'
-        )
-    );
-    $service_area_slug = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_taxonomy_slug'
-        )
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'global'
+        ),
+        ARRAY_A
     );
 
-    $manual_service_area_posts = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'manual_service_area_posts'
-        )
-    );
+    $global_settings = [];
+    if ( ! empty( $global_rows ) ) {
+        foreach ( $global_rows as $row ) {
+            $global_settings[ $row['property'] ] = $row['value'];
+        }
+    }
+    $post_type = $global_settings['service_area_posttype'];
+    $post_taxo = $global_settings['service_area_taxonomy'];
+    $post_term = $global_settings['service_area_term'];
+    $service_area_slug = $global_settings['service_area_taxonomy_slug'];
+    $manual_service_area_posts = $global_settings['manual_service_area_posts'];
     if(isset($manual_service_area_posts)){
         $manual_service_area_posts = json_decode(stripslashes($manual_service_area_posts),true);
     }else{
         $manual_service_area_posts = [];
     }
 
-    $manual_service_general_posts = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'manual_service_general_posts'
-        )
-    );
+    $manual_service_general_posts = $global_settings['manual_service_general_posts'];
     if(isset($manual_service_general_posts)){
         $manual_service_general_posts = json_decode(stripslashes($manual_service_general_posts),true);
     }else{
@@ -93,63 +73,29 @@ function service_area_generate_schema(){
     $results = [];
     $check = [];
 
-    //Properties from home page
-    $home_logo = $wpdb->get_var(
+    //fetch home page setting
+    $home_rows = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'logo'
-        )
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'home_page'
+        ),
+        ARRAY_A
     );
-    $home_businessType = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'businessType'
-        )
-    );
-    $home_businessType_text = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'businessType-text'
-        )
-    );
-    $home_priceRange = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'priceRange'
-        )
-    );
-    $home_paymentAccepted = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'paymentAccepted'
-        )
-    );
-    $home_award = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'awards'
-        )
-    );
-    $home_knowsLanguage = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'knowsLanguage'
-        )
-    );
-    $home_telephone = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'telephone'
-        )
-    );
+
+    $home_settings = [];
+    if ( ! empty( $home_rows ) ) {
+        foreach ( $home_rows as $row ) {
+            $home_settings[ $row['property'] ] = $row['value'];
+        }
+    }
+    $home_logo =$home_settings['logo'];
+    $home_businessType = $home_settings['businessType'];
+    $home_businessType_text = $home_settings['businessType-text'];
+    $home_priceRange = $home_settings['priceRange'];
+    $home_paymentAccepted = $home_settings['paymentAccepted'];
+    $home_award = $home_settings['awards'];
+    $home_knowsLanguage = $home_settings['knowsLanguage'];
+    $home_telephone = $home_settings['telephone'];
     $days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
     $home_hours = $wpdb->get_results(
@@ -161,7 +107,7 @@ function service_area_generate_schema(){
         )
     );
 
-    //fetch schema setting
+    //fetch service area setting
     $rows = $wpdb->get_results(
         $wpdb->prepare(
             "SELECT property, value FROM $table_name WHERE page = %s",
@@ -193,6 +139,17 @@ function service_area_generate_schema(){
             $url = get_post_permalink($post_id);
             $schema["@id"] = $url . '#localbusiness';
             $schema["url"] = $url;
+            //parent organization
+            $parentOrganization = [];
+            $home_url = home_url();
+            $parentOrganization['@type'] = 'Organization';
+            $parentOrganization['@id'] = $home_url . '/#localbusiness';
+            $parentOrganization['url'] = $home_url;
+            $schema['parentOrganization'] = $parentOrganization;
+            //sameAs(social media)
+            if($home_settings['social-media']){
+                $schema['sameAs']=explode(',',$home_settings['social-media']);
+            }
             if($home_logo){
                 $schema["logo"] = $home_logo;
             }
@@ -587,7 +544,7 @@ function service_area_generate_schema(){
         wp_reset_postdata();
         wp_send_json_success([
             'schema' => $results,
-            //'testing'=>$posts_query
+            'testing'=>$home_settings,
         ]);
     }
 }

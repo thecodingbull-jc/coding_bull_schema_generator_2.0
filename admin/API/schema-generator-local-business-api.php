@@ -68,6 +68,10 @@ function homepage_generate_schema(){
     if($homepage_properties['keywords']){
         $schema['telephone']=explode(',',$homepage_properties['telephone']);
     }
+    //sameAs(social media)
+    if($homepage_properties['social-media']){
+        $schema['sameAs']=explode(',',$homepage_properties['social-media']);
+    }
     //address
     if($single_address && ($homepage_properties['addressLocality'] || $homepage_properties['addressRegion'] || $homepage_properties['postalCode'] || $homepage_properties['streetAddress'] )){
         $address_schema = [];
@@ -159,133 +163,133 @@ function homepage_generate_schema(){
     }
     
     //hasCatalog(General & Capability)
-    $areaServed_schema = [];
-    $service_post_type = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_general_posttype'
-        )
-    );
-    $general_service_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_general_taxonomy'
-        )
-    );
-    $general_service_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_general_term'
-        )
-    );
-    $capability_service_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_taxonomy'
-        )
-    );
-    $capability_service_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_term'
-        )
-    );
-    $manual_service_general_posts = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'manual_service_general_posts'
-        )
-    );
-    $manual_service_capability_posts = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'manual_service_capability_posts'
-        )
-    );
-    if(isset($manual_service_general_posts)){
-        $manual_service_general_posts = json_decode(stripslashes($manual_service_general_posts),true);
-    }else{
-        $manual_service_general_posts = [];
-    }
-    if(isset($manual_service_capability_posts)){
-        $manual_service_capability_posts = json_decode(stripslashes($manual_service_capability_posts),true);
-    }else{
-        $manual_service_capability_posts = [];
-    }
-    $service_result = [];
-    $service_args = [];
-    if(isset($service_post_type)){
-        $service_args = [
-            'post_type'      => $service_post_type,
-            'posts_per_page' => -1,
-            'post_status'    => 'publish',
-        ];
+    // $areaServed_schema = [];
+    // $service_post_type = $wpdb->get_var(
+    //     $wpdb->prepare(
+    //         "SELECT value FROM $table_name WHERE page = %s and property = %s",
+    //         'global',
+    //         'service_general_posttype'
+    //     )
+    // );
+    // $general_service_taxo = $wpdb->get_var(
+    //     $wpdb->prepare(
+    //         "SELECT value FROM $table_name WHERE page = %s and property = %s",
+    //         'global',
+    //         'service_general_taxonomy'
+    //     )
+    // );
+    // $general_service_term = $wpdb->get_var(
+    //     $wpdb->prepare(
+    //         "SELECT value FROM $table_name WHERE page = %s and property = %s",
+    //         'global',
+    //         'service_general_term'
+    //     )
+    // );
+    // $capability_service_taxo = $wpdb->get_var(
+    //     $wpdb->prepare(
+    //         "SELECT value FROM $table_name WHERE page = %s and property = %s",
+    //         'global',
+    //         'service_capability_taxonomy'
+    //     )
+    // );
+    // $capability_service_term = $wpdb->get_var(
+    //     $wpdb->prepare(
+    //         "SELECT value FROM $table_name WHERE page = %s and property = %s",
+    //         'global',
+    //         'service_capability_term'
+    //     )
+    // );
+    // $manual_service_general_posts = $wpdb->get_var(
+    //     $wpdb->prepare(
+    //         "SELECT value FROM $table_name WHERE page = %s and property = %s",
+    //         'global',
+    //         'manual_service_general_posts'
+    //     )
+    // );
+    // $manual_service_capability_posts = $wpdb->get_var(
+    //     $wpdb->prepare(
+    //         "SELECT value FROM $table_name WHERE page = %s and property = %s",
+    //         'global',
+    //         'manual_service_capability_posts'
+    //     )
+    // );
+    // if(isset($manual_service_general_posts)){
+    //     $manual_service_general_posts = json_decode(stripslashes($manual_service_general_posts),true);
+    // }else{
+    //     $manual_service_general_posts = [];
+    // }
+    // if(isset($manual_service_capability_posts)){
+    //     $manual_service_capability_posts = json_decode(stripslashes($manual_service_capability_posts),true);
+    // }else{
+    //     $manual_service_capability_posts = [];
+    // }
+    // $service_result = [];
+    // $service_args = [];
+    // if(isset($service_post_type)){
+    //     $service_args = [
+    //         'post_type'      => $service_post_type,
+    //         'posts_per_page' => -1,
+    //         'post_status'    => 'publish',
+    //     ];
 
-        $service_args['tax_query'] = [
-            'relation' => 'OR',
-            [
-                'taxonomy' => $general_service_taxo,
-                'field'    => 'id',
-                'terms'    => $general_service_term
-            ],
-            [
-                'taxonomy' => $capability_service_taxo,
-                'field'    => 'id',
-                'terms'    => $capability_service_term
-            ],
-        ];
-    }
-    elseif((isset($manual_service_general_posts) && $manual_service_general_posts!=[]) || (isset($manual_service_capability_posts) && $manual_service_capability_posts!=[])){
-        $manual_service_merge =  array_merge($manual_service_general_posts,$manual_service_capability_posts);
-        $service_args = [
-            'post_type' => 'any',
-            'post__in'       => $manual_service_merge,
-            'orderby'        => 'post__in',
-            'posts_per_page' => -1
-        ];
-    }
-    else{
-        $service_args = [];
-    }
+    //     $service_args['tax_query'] = [
+    //         'relation' => 'OR',
+    //         [
+    //             'taxonomy' => $general_service_taxo,
+    //             'field'    => 'id',
+    //             'terms'    => $general_service_term
+    //         ],
+    //         [
+    //             'taxonomy' => $capability_service_taxo,
+    //             'field'    => 'id',
+    //             'terms'    => $capability_service_term
+    //         ],
+    //     ];
+    // }
+    // elseif((isset($manual_service_general_posts) && $manual_service_general_posts!=[]) || (isset($manual_service_capability_posts) && $manual_service_capability_posts!=[])){
+    //     $manual_service_merge =  array_merge($manual_service_general_posts,$manual_service_capability_posts);
+    //     $service_args = [
+    //         'post_type' => 'any',
+    //         'post__in'       => $manual_service_merge,
+    //         'orderby'        => 'post__in',
+    //         'posts_per_page' => -1
+    //     ];
+    // }
+    // else{
+    //     $service_args = [];
+    // }
 
-    $service_query = new WP_Query($service_args);
-    if ($service_query->have_posts()) {
-        while ($service_query->have_posts()) {
-            $service_query->the_post();
-            $single_service = [];
-            if($homepage_properties['hasOfferCatalog-name']){
-                $field = explode(',', $homepage_properties['hasOfferCatalog-name']);
-                $field_name = $field[0];
-                $field_type = $field[1];
-                if ($field_type == 'built-in') {
-                    $single_service['name'] = get_post_field($field_name);
-                } elseif ($field_type == 'ACF') {
-                    $single_service['name'] = get_field($field_name);
-                }
-            }
-            if($homepage_properties['hasOfferCatalog-description']){
-                $field = explode(',', $homepage_properties['hasOfferCatalog-description']);
-                $field_name = $field[0];
-                $field_type = $field[1];
-                if ($field_type == 'built-in') {
-                    $single_service['description'] = get_post_field($field_name);
-                } elseif ($field_type == 'ACF') {
-                    $single_service['description'] = get_field($field_name);
-                }
-            }
-            $single_service['url'] = get_post_permalink(get_the_ID());
-            $service_result[] = $single_service;
-        }
-        $schema["hasOfferCatalog"] = $service_result;
-    }
-    wp_reset_postdata();
+    // $service_query = new WP_Query($service_args);
+    // if ($service_query->have_posts()) {
+    //     while ($service_query->have_posts()) {
+    //         $service_query->the_post();
+    //         $single_service = [];
+    //         if($homepage_properties['hasOfferCatalog-name']){
+    //             $field = explode(',', $homepage_properties['hasOfferCatalog-name']);
+    //             $field_name = $field[0];
+    //             $field_type = $field[1];
+    //             if ($field_type == 'built-in') {
+    //                 $single_service['name'] = get_post_field($field_name);
+    //             } elseif ($field_type == 'ACF') {
+    //                 $single_service['name'] = get_field($field_name);
+    //             }
+    //         }
+    //         if($homepage_properties['hasOfferCatalog-description']){
+    //             $field = explode(',', $homepage_properties['hasOfferCatalog-description']);
+    //             $field_name = $field[0];
+    //             $field_type = $field[1];
+    //             if ($field_type == 'built-in') {
+    //                 $single_service['description'] = get_post_field($field_name);
+    //             } elseif ($field_type == 'ACF') {
+    //                 $single_service['description'] = get_field($field_name);
+    //             }
+    //         }
+    //         $single_service['url'] = get_post_permalink(get_the_ID());
+    //         $service_result[] = $single_service;
+    //     }
+    //     $schema["hasOfferCatalog"] = $service_result;
+    // }
+    // wp_reset_postdata();
     //areaServed
     if(!$single_location){
         $areaServed_schema = [];

@@ -300,7 +300,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 },
                 success: function(response) {
                     if(response.success){
-                        //console.log(response.data)
+                        console.log(response.data)
                         done=0;
                         response.data.schema.forEach(element => {
                             console.log(JSON.parse(element));

@@ -5,139 +5,64 @@ add_action('wp_ajax_service_general_generate_schema', 'service_general_generate_
 function service_general_generate_schema(){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
-    $post_type = $wpdb->get_var(
+    $schema=[];
+    //fetch global setting
+    $global_rows = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_general_posttype'
-        )
-    );
-    $post_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_general_taxonomy'
-        )
-    );
-    $post_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_general_term'
-        )
-    );
-    $service_capability_post_type = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_posttype'
-        )
-    );
-    $service_capability_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_taxonomy'
-        )
-    );
-    $service_capability_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_capability_term'
-        )
-    );
-    $service_area_slug = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_taxonomy_slug'
-        )
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'global'
+        ),
+        ARRAY_A
     );
 
-    $service_slug = $wpdb->get_var(
+    $global_settings = [];
+    if ( ! empty( $global_rows ) ) {
+        foreach ( $global_rows as $row ) {
+            $global_settings[ $row['property'] ] = $row['value'];
+        }
+    }
+    //get homepage properties
+    $homepage_properties = [];
+    $homepage_properties_rows = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_taxonomy_slug'
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'home_page'
         )
     );
+    foreach ($homepage_properties_rows as $row){
+        $homepage_properties[ $row->property ] = $row->value;
+    }
+    //get service area properties
+    $service_area_settings = [];
+    $service_area_rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT property, value FROM $table_name WHERE page = %s",
+            'service-area'
+        )
+    );
+    foreach ($service_area_rows as $row){
+        $service_area_settings[ $row->property ] = $row->value;
+    }
+
+    $post_type =$global_settings['service_general_posttype'];
+    $post_taxo = $global_settings['service_general_taxonomy'];
+    $post_term = $global_settings['service_general_term'];
+    $service_capability_post_type = $global_settings['service_capability_posttype'];
+    $service_capability_taxo = $global_settings['service_capability_taxonomy'];
+    $service_capability_term = $global_settings['service_capability_term'];
+    $service_area_slug = $global_settings['service_area_taxonomy_slug'];
+    $service_slug = $global_settings['service_taxonomy_slug'];
+    $single_address = $global_settings['single_location'];
+    $service_area_post_type = $global_settings['service_area_posttype'];
+    $service_area_taxo = $global_settings['service_area_taxonomy'];
+    $service_area_term = $global_settings['service_area_term'];
     
-    $single_address = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s AND property = %s",
-            'global',
-            'single_location'
-        )
-    );
-
-    $service_area_post_type = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_posttype'
-        )
-    );
-    $service_area_taxo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_taxonomy'
-        )
-    );
-    $service_area_term = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'service_area_term'
-        )
-    );
-    
-    $service_area_name = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-name'
-        )
-    );
-
-    $service_area_street = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-street-address'
-        )
-    );
-    $service_area_city = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-city'
-        )
-    );
-    $service_area_province = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-province'
-        )
-    );
-    $service_area_postal = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'service-area',
-            'service-area-postal-code'
-        )
-    );
-    
-
-    $manual_service_general_posts = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'global',
-            'manual_service_general_posts'
-        )
-    );
+    $service_area_name = $service_area_settings['service-area-name'];
+    $service_area_street = $service_area_settings['service-area-street-address'];
+    $service_area_city =  $service_area_settings['service-area-city'];
+    $service_area_province =  $service_area_settings['service-area-province'];
+    $service_area_postal =  $service_area_settings['service-area-postal-code'];
+    $manual_service_general_posts =  $global_settings['manual_service_general_posts'];
     if(isset($manual_service_general_posts)){
         $manual_service_general_posts = json_decode(stripslashes($manual_service_general_posts),true);
     }else{
@@ -319,7 +244,7 @@ function service_general_generate_schema(){
                         )
                     );
                     //provider
-                    $schema['provider'] = ["@id" => $service_area_url . '#localbusiness'];
+                    $schema['provider'] = ["@id" => $service_area_url . '#localbusiness',"url" => $service_area_url];
                     //areaServce
                     $areaserved_schema = [];
                     $areaserved_schema["@type"] = "City";
@@ -430,6 +355,9 @@ function service_general_generate_schema(){
                     $branch_schema["@id"] = $service_area_url . '#localbusiness';
                     $branch_schema["url"] = $service_area_url;
                 }
+            }else{
+                //provider from home page if single location
+                $schema['provider'] = ["@id" => home_url() . '/#localbusiness',"url" => home_url() , 'name' => $homepage_properties['name']];
             }
            
             //hasOfferCatelog
