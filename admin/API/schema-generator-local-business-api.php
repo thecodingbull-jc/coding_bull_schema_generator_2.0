@@ -327,7 +327,7 @@ function homepage_generate_schema(){
             $manual_service_area_posts = [];
         }
         $service_area_args = [];
-        if(isset($service_post_type)){
+        if(isset($service_area_post_type)){
             $service_area_args = [
                 'post_type'      => $service_area_post_type,
                 'posts_per_page' => -1,
@@ -508,6 +508,6 @@ function homepage_generate_schema(){
     wp_send_json_success([
         //'properties' => $homepage_properties,
         'schema' => $schema,
-        'testing'=> $service_area_query
+        'testing'=> $service_area_args
     ]);
 }

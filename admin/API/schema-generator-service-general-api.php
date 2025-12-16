@@ -74,7 +74,7 @@ function service_general_generate_schema(){
     if($post_type!=""){
         $post_args = [
             'post_type'=> $post_type,
-            'posts_per_page' => 1,//change this
+            'posts_per_page' => -1,//change this
             'status' => 'publish'
         ];
 
@@ -201,33 +201,47 @@ function service_general_generate_schema(){
 
             //properties from service area pagae
             if(!$single_address){
-                $service_area_terms = get_the_terms( $post_id, $service_area_slug );
-                if($service_area_post_type!=""){
+                if(isset($service_area_post_type)){
+                    $service_area_terms = get_the_terms( $post_id, $service_area_slug );
                     $service_area_args = [
                         'post_type'      => $service_area_post_type,
                         'posts_per_page' => 1,
                         'fields'         => 'ids',
-                        'tax_query'      => [
-                            'relation' => 'AND',
-                            [
-                                'taxonomy' => $service_area_slug,
-                                'field'    => 'id',
-                                'terms'    => $service_area_terms[0]->term_id,
-                            ],
-                            [
-                                'taxonomy' => $service_area_taxo,
-                                'field'    => 'id',
-                                'terms'    => $service_area_term,
-                            ]
-                        ]
                     ];
+                    $tax_query =  [
+                        'relation' => 'AND',
+                        [
+                            'taxonomy' => $service_area_slug,
+                            'field'    => 'id',
+                            'terms'    => $service_area_terms[0]->term_id,
+                        ],
+                    ];
+                    if($service_area_term && $service_area_taxo){
+                        $tax_query[] = 
+                        [
+                            'taxonomy' => $service_area_taxo,
+                            'field'    => 'id',
+                            'terms'    => $service_area_term,
+                        ];
+                    }
+                    $service_area_args['tax_query'] = $tax_query;
                 }elseif(isset($manual_service_area_posts) && $manual_service_area_posts!=[]){
                     $service_area_args = [
                         'post_type' => 'any',
                         'post__in'       => $manual_service_area_posts,
                         'orderby'        => 'post__in',
-                        'posts_per_page' => -1
+                        'posts_per_page' => 1
                     ];
+                    $service_area_terms = get_the_terms( $post_id, $service_area_slug );
+                    $service_area_args['tax_query'] =  [
+                        'relation' => 'AND',
+                        [
+                            'taxonomy' => $service_area_slug,
+                            'field'    => 'id',
+                            'terms'    => $service_area_terms[0]->term_id,
+                        ],
+                    ];
+                    
                 }else{
                     $service_area_args = [];
                 }
