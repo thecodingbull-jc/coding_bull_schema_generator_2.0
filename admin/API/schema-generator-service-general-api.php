@@ -566,6 +566,116 @@ function service_general_generate_schema(){
                 }
             }
 
+            // Blog
+            $service_terms = wp_get_post_terms($post_id, $service_slug, ['fields' => 'ids']);
+            if (!empty($terms) && !is_wp_error($terms)) {
+                $blog_args = [
+                    'post_type'      => 'post',
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'tax_query'      => [
+                        [
+                            'taxonomy' => $service_slug,
+                            'field'    => 'term_id',
+                            'terms'    => $service_terms,
+                        ],
+                    ],
+                ];
+            }
+
+            $blog_query = new WP_Query($blog_args);
+            if ($blog_query->have_posts()) {
+                $blog_schema = [];
+                
+                
+                while ($blog_query->have_posts()) {
+                    $blog_query->the_post();  
+                    $blog_id = get_the_ID();
+                    $single_blog = [];
+                    $single_blog['@type'] = "WebPage";
+                    $blog_url = get_permalink($blog_id);
+                    $single_blog['@id'] = $blog_url . "#article";
+                    $single_blog['url'] = $blog_url;
+                    $blog_name = $wpdb->get_var(
+                        $wpdb->prepare(
+                            "SELECT value FROM $table_name WHERE page = %s and property = %s",
+                            'blog',
+                            'headline'
+                        )
+                    );
+                    if($blog_name){
+                        $field = explode(',', $blog_name);
+                        $field_name = $field[0];
+                        $field_type = $field[1];
+                        if ($field_type == 'built-in') {
+                            $single_blog['name'] = get_post_field($field_name);
+                        } elseif ($field_type == 'ACF') {
+                            $single_blog['name'] = get_field($field_name);
+                        }
+                    }
+                    $blog_schema[] = $single_blog;
+                }   
+                wp_reset_postdata();
+                $schema["isRelatedTo"] = array_merge($schema["isRelatedTo"],$blog_schema);
+
+            }
+
+            // Past Project
+            $service_terms = wp_get_post_terms($post_id, $service_slug, ['fields' => 'ids']);
+            $past_project_post_type = $global_settings["past_project_posttype"];
+            if (!empty($terms) && !is_wp_error($terms) && $past_project_post_type) {
+                $past_project_args = [
+                    'post_type'      => $past_project_posttype,
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'tax_query'      => [
+                        [
+                            'taxonomy' => $service_slug,
+                            'field'    => 'term_id',
+                            'terms'    => $service_terms,
+                        ],
+                    ],
+                ];
+            }
+
+            $past_project_query = new WP_Query($past_project_args);
+            if ($past_project_query->have_posts()) {
+                $past_project_schema = [];
+                
+                
+                while ($past_project_query->have_posts()) {
+                    $past_project_query->the_post();  
+                    $project_id = get_the_ID();
+                    $single_project = [];
+                    $single_project['@type'] = "CreativeWork";
+                    $project_url = get_permalink($project_id);
+                    $single_project['@id'] = $project_url . "#project";
+                    $single_project['url'] = $project_url;
+                    $project_name = $wpdb->get_var(
+                        $wpdb->prepare(
+                            "SELECT value FROM $table_name WHERE page = %s and property = %s",
+                            'past-project',
+                            'name'
+                        )
+                    );
+                    if($project_name){
+                        $field = explode(',', $project_name);
+                        $field_name = $field[0];
+                        $field_type = $field[1];
+                        if ($field_type == 'built-in') {
+                            $single_project['name'] = get_post_field($field_name);
+                        } elseif ($field_type == 'ACF') {
+                            $single_project['name'] = get_field($field_name);
+                        }
+                    }
+                    $past_project_schema[] = $single_project;
+                }   
+                wp_reset_postdata();
+                $schema["exampleOfWork"] = $past_project_schema;
+
+            }
+
+
             //FAQ
             $faq = $wpdb->get_var(
                 $wpdb->prepare(
@@ -599,6 +709,7 @@ function service_general_generate_schema(){
 
         wp_send_json_success([
             'schema' => $results,
+            'test' => $past_project_query
         ]);
     }
 }
