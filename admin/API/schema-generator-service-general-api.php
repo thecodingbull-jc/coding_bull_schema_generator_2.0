@@ -625,7 +625,7 @@ function service_general_generate_schema(){
             $past_project_post_type = $global_settings["past_project_posttype"];
             if (!empty($terms) && !is_wp_error($terms) && $past_project_post_type) {
                 $past_project_args = [
-                    'post_type'      => $past_project_posttype,
+                    'post_type'      => $past_project_post_type,
                     'post_status'    => 'publish',
                     'posts_per_page' => -1,
                     'tax_query'      => [
