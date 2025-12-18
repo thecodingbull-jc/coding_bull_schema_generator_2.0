@@ -334,7 +334,7 @@ $average_rating = round($average_rating, 1);
             <textarea name="knowsLanguage"></textarea>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:8px;">
+        <!-- <div style="display:flex; flex-direction:column; gap:8px;">
             <label>areaServed</label>
             <div>
                 <label>City</label>
@@ -363,9 +363,9 @@ $average_rating = round($average_rating, 1);
                     <?php endforeach; ?>
                 </select>
             </div>
-        </div>
+        </div> -->
 
-        <div style="display:<?echo $global_setting_address?"none":"flex"?>; flex-direction:column; gap:8px;"  style="display:<?echo $global_setting_address?"block":"none"?>;" >
+        <!-- <div style="display:<?echo $global_setting_address?"none":"flex"?>; flex-direction:column; gap:8px;"  style="display:<?echo $global_setting_address?"block":"none"?>;" >
             <label>Address</label>
             <div>
                 <label>Street Address</label>
@@ -404,7 +404,7 @@ $average_rating = round($average_rating, 1);
                     <?php endforeach; ?>
                 </select>
             </div>
-        </div>
+        </div> -->
 
         <div style="display:flex; flex-direction:column; gap:8px;">
             <label>hasOfferCatalog(General)</label>
