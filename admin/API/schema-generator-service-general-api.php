@@ -624,7 +624,7 @@ function service_general_generate_schema(){
                     $past_project_schema[] = $single_project;
                 }   
                 wp_reset_postdata();
-                $schema["exampleOfWork"] = $past_project_schema;
+                $schema["subjectOf"] = $past_project_schema;
 
             }
 
