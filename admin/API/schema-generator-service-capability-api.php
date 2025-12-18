@@ -527,9 +527,41 @@ function service_capability_generate_schema(){
                     'faq-answer'
                 )
             );
-            
             $faq_schema= get_faq_object($post_id, $faq, $question, $answer);
-            $final_schema['@graph'] = [$schema,$branch_schema];
+
+            //Product schema for testing
+            $product_schema = [];
+            $product_schema['@type'] = 'Product';
+             //name
+            if($saved_settings['service-general-name']){
+                $field = explode(',', $saved_settings['service-general-name']);
+                $field_name = $field[0];
+                $field_type = $field[1];
+                if ($field_type == 'built-in') {
+                    $product_schema['name'] = get_post_field($field_name,$post_id);
+                } elseif ($field_type == 'ACF') {
+                    $product_schema['name'] = get_field($field_name,$post_id);
+                }
+            }
+            //description
+            if($saved_settings['service-general-description']){
+                $field = explode(',', $saved_settings['service-general-description']);
+                $field_name = $field[0];
+                $field_type = $field[1];
+                if ($field_type == 'built-in') {
+                    $product_schema['description'] = get_post_field($field_name,$post_id);
+                } elseif ($field_type == 'ACF') {
+                    $product_schema['description'] = get_field($field_name,$post_id);
+                }
+            }
+            //aggregate rating
+            $aggregateRating_schema = get_aggregate_review();
+            if(isset($aggregateRating_schema)){
+                $product_schema['aggregateRating'] = $aggregateRating_schema;
+            }
+
+
+            $final_schema['@graph'] = [$schema,$branch_schema,$product_schema];
             update_post_meta($post_id, '_injected_script',  json_encode($final_schema));
             if($faq_schema['mainEntity']){
                 update_post_meta($post_id, '_injected_faq_script',  json_encode($faq_schema));
