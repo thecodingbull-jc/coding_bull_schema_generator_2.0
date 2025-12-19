@@ -6,6 +6,7 @@ function service_capability_generate_schema(){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
     $schema=[];
+    $branches_schema=[];
     //fetch global setting
     $global_rows = $wpdb->get_results(
         $wpdb->prepare(
@@ -102,21 +103,9 @@ function service_capability_generate_schema(){
 
 
     //Properties from home page
-    $businessType = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'businessType'
-        )
-    );
+    $businessType = $homepage_properties['businessType'];
 
-    $home_logo = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE page = %s and property = %s",
-            'home_page',
-            'logo'
-        )
-    );
+    $home_logo = $homepage_properties["logo"];
 
     //fetch schema setting
     $rows = $wpdb->get_results(
@@ -159,7 +148,7 @@ function service_capability_generate_schema(){
             $final_schema["@context"] = "https://schema.org";
             //properties from home page
             if($businessType){
-                $schema["@type"] = "Service";
+                $schema["@type"] = ["Service","Product"];
             }
             if($home_logo){
                 $schema["logo"] = $home_logo;
@@ -203,9 +192,10 @@ function service_capability_generate_schema(){
             if(!$single_address){
                 if(isset($service_area_post_type)){
                     $service_area_terms = get_the_terms( $post_id, $service_area_slug );
+                    $service_area_term_ids = wp_list_pluck( $service_area_terms, 'term_id' );
                     $service_area_args = [
                         'post_type'      => $service_area_post_type,
-                        'posts_per_page' => 1,
+                        'posts_per_page' => -1,
                         'fields'         => 'ids',
                     ];
                     $tax_query =  [
@@ -213,7 +203,7 @@ function service_capability_generate_schema(){
                         [
                             'taxonomy' => $service_area_slug,
                             'field'    => 'id',
-                            'terms'    => $service_area_terms[0]->term_id,
+                            'terms'    => $service_area_term_ids,
                         ],
                     ];
                     if($service_area_term && $service_area_taxo){
@@ -230,15 +220,16 @@ function service_capability_generate_schema(){
                         'post_type' => 'any',
                         'post__in'       => $manual_service_area_posts,
                         'orderby'        => 'post__in',
-                        'posts_per_page' => 1
+                        'posts_per_page' => -1
                     ];
                     $service_area_terms = get_the_terms( $post_id, $service_area_slug );
+                    $service_area_term_ids = wp_list_pluck( $service_area_terms, 'term_id' );
                     $service_area_args['tax_query'] =  [
                         'relation' => 'AND',
                         [
                             'taxonomy' => $service_area_slug,
                             'field'    => 'id',
-                            'terms'    => $service_area_terms[0]->term_id,
+                            'terms'    => $service_area_term_ids,
                         ],
                     ];
                     
@@ -289,20 +280,8 @@ function service_capability_generate_schema(){
                         $areaserved_schema[] = $single_areaserved;
                         //Branch schema
                         $branch_schema = [];
-                        $home_businessType = $wpdb->get_var(
-                            $wpdb->prepare(
-                                "SELECT value FROM $table_name WHERE page = %s and property = %s",
-                                'home_page',
-                                'businessType'
-                            )
-                        );
-                        $home_businessType_text = $wpdb->get_var(
-                            $wpdb->prepare(
-                                "SELECT value FROM $table_name WHERE page = %s and property = %s",
-                                'home_page',
-                                'businessType-text'
-                            )
-                        );
+                        $home_businessType = $homepage_properties['businessType'];
+                        $home_businessType_text = $homepage_properties['businessType-text'];
                         if($home_businessType_text){
                             $branch_schema["@type"] = $home_businessType_text;
                         }elseif($home_businessType){
@@ -318,18 +297,102 @@ function service_capability_generate_schema(){
                         }
                         $branch_schema["@id"] = $service_area_url . '#localbusiness';
                         $branch_schema["url"] = $service_area_url;
-                        
-                        //aggregate rating
-                        $aggregateRating_schema = get_aggregate_review();
-                        if(isset($aggregateRating_schema)){
-                            $branch_schema['aggregateRating'] = $aggregateRating_schema;
+
+                        //address
+                        $branch_address = [];
+                        if($service_area_street){
+                            $field = explode(',', $service_area_street);
+                            $field_name = $field[0];
+                            $field_type = $field[1];
+                            if ($field_type == 'built-in') {
+                                $street_address = get_post_field($field_name,$service_area_id);
+                                if($street_address){
+                                    $branch_address['streetAddress'] = $street_address;
+                                }
+                                
+                            } elseif ($field_type == 'ACF') {
+                                $street_address = get_field($field_name,$service_area_id);
+                                if($street_address){
+                                    $branch_address['streetAddress'] = $street_address;
+                                }
+                            }
                         }
+                        
+                        if($service_area_city){
+                            $field = explode(',', $service_area_city);
+                            $field_name = $field[0];
+                            $field_type = $field[1];
+                            if ($field_type == 'built-in') {
+                                $branch_address['addressLocality'] = get_post_field($field_name,$service_area_id);
+                            } elseif ($field_type == 'ACF') {
+                                $branch_address['addressLocality'] = get_field($field_name,$service_area_id);
+                            }
+                        }
+                        if($service_area_province){
+                            $field = explode(',', $service_area_province);
+                            $field_name = $field[0];
+                            $field_type = $field[1];
+                            if ($field_type == 'built-in') {
+                                $branch_address['addressRegion'] = get_post_field($field_name,$service_area_id);
+                            } elseif ($field_type == 'ACF') {
+                                $branch_address['addressRegion'] = get_field($field_name,$service_area_id);
+                            }
+                        }
+                        if($service_area_country){
+                            $field = explode(',', $service_area_country);
+                            $field_name = $field[0];
+                            $field_type = $field[1];
+                            if ($field_type == 'built-in') {
+                                $branch_address['addressCountry'] = get_post_field($field_name,$service_area_id);
+                            } elseif ($field_type == 'ACF') {
+                                $branch_address['addressCountry'] = get_field($field_name,$service_area_id);
+                            }
+                        }
+                        if($service_area_postal){
+                            $field = explode(',', $service_area_postal);
+                            $field_name = $field[0];
+                            $field_type = $field[1];
+                            if ($field_type == 'built-in') {
+                                $branch_address['postalCode'] = get_post_field($field_name,$service_area_id);
+                            } elseif ($field_type == 'ACF') {
+                                $branch_address['postalCode'] = get_field($field_name,$service_area_id);
+                            }
+                        } 
+                        $branch_schema["address"] = $branch_address;
+                        $branches_schema[] = $branch_schema;
+                        //aggregate rating
+                        // $aggregateRating_schema = get_aggregate_review();
+                        // if(isset($aggregateRating_schema)){
+                        //     $branch_schema['aggregateRating'] = $aggregateRating_schema;
+                        // }
                     }
                     $schema['provider'] = $provider_schema;
                     $schema['areaServed'] = $areaserved_schema;
                 }
             }else{
                 //provider from home page if single location
+                $home_businessType = $homepage_properties['businessType'];
+                $home_businessType_text = $homepage_properties['businessType-text'];
+                $home_name = $$homepage_properties['name'];
+                $branch_schema = [];
+                if($home_businessType_text){
+                    $branch_schema["@type"] = $home_businessType_text;
+                }elseif($home_businessType){
+                    $branch_schema["@type"] = $home_businessType;
+                }
+                if($home_name){
+                    $branch_schema["name"] = $home_name;
+                }
+                $branch_schema['@id'] = home_url() . '/#localbusiness';
+                $branch_schema['url'] = home_url();
+                $address_schema = [];
+                $address_schema['addressLocality'] = $homepage_properties['addressLocality'];
+                $address_schema['addressRegion'] = $homepage_properties['addressRegion'];
+                $address_schema['addressCountry'] = $homepage_properties['addressCountry'];
+                $address_schema['postalCode'] = $homepage_properties['postalCode'];
+                $address_schema['streetAddress'] = $homepage_properties['streetAddress'];
+                $branch_schema['address'] = $address_schema;
+                $branches_schema [] = $branch_schema;
                 $schema['provider'] = ["@id" => home_url() . '/#localbusiness',"url" => home_url() , 'name' => $homepage_properties['name']];
             }
            
@@ -397,10 +460,10 @@ function service_capability_generate_schema(){
                     $review_result = generate_review_schema($review_post_type,$review_settings,$review_query);
                     $schema['review'] = $review_result;
                 }
-                // $aggregateRating_schema = get_aggregate_review();
-                // if(isset($aggregateRating_schema)){
-                //     $schema['aggregateRating'] = $aggregateRating_schema;
-                // }
+                $aggregateRating_schema = get_aggregate_review();
+                if(isset($aggregateRating_schema)){
+                    $schema['aggregateRating'] = $aggregateRating_schema;
+                }
             }
 
             // Blog
@@ -535,31 +598,31 @@ function service_capability_generate_schema(){
             );
             $faq_schema= get_faq_object($post_id, $faq, $question, $answer);
 
-            //Product schema for testing
-            $product_schema = [];
-            $product_schema['@type'] = 'Product';
-             //name
-            if($saved_settings['service-general-name']){
-                $field = explode(',', $saved_settings['service-general-name']);
-                $field_name = $field[0];
-                $field_type = $field[1];
-                if ($field_type == 'built-in') {
-                    $product_schema['name'] = get_post_field($field_name,$post_id);
-                } elseif ($field_type == 'ACF') {
-                    $product_schema['name'] = get_field($field_name,$post_id);
-                }
-            }
-            //description
-            if($saved_settings['service-general-description']){
-                $field = explode(',', $saved_settings['service-general-description']);
-                $field_name = $field[0];
-                $field_type = $field[1];
-                if ($field_type == 'built-in') {
-                    $product_schema['description'] = get_post_field($field_name,$post_id);
-                } elseif ($field_type == 'ACF') {
-                    $product_schema['description'] = get_field($field_name,$post_id);
-                }
-            }
+            // //Product schema for testing
+            // $product_schema = [];
+            // $product_schema['@type'] = 'Product';
+            //  //name
+            // if($saved_settings['service-general-name']){
+            //     $field = explode(',', $saved_settings['service-general-name']);
+            //     $field_name = $field[0];
+            //     $field_type = $field[1];
+            //     if ($field_type == 'built-in') {
+            //         $product_schema['name'] = get_post_field($field_name,$post_id);
+            //     } elseif ($field_type == 'ACF') {
+            //         $product_schema['name'] = get_field($field_name,$post_id);
+            //     }
+            // }
+            // //description
+            // if($saved_settings['service-general-description']){
+            //     $field = explode(',', $saved_settings['service-general-description']);
+            //     $field_name = $field[0];
+            //     $field_type = $field[1];
+            //     if ($field_type == 'built-in') {
+            //         $product_schema['description'] = get_post_field($field_name,$post_id);
+            //     } elseif ($field_type == 'ACF') {
+            //         $product_schema['description'] = get_field($field_name,$post_id);
+            //     }
+            // }
             //aggregate rating
             // $aggregateRating_schema = get_aggregate_review();
             // if(isset($aggregateRating_schema)){
@@ -567,7 +630,7 @@ function service_capability_generate_schema(){
             // }
 
 
-            $final_schema['@graph'] = [$schema,$branch_schema,$product_schema];
+            $final_schema['@graph'] = array_merge([$schema] , $branches_schema);
             update_post_meta($post_id, '_injected_script',  json_encode($final_schema));
             if($faq_schema['mainEntity']){
                 update_post_meta($post_id, '_injected_faq_script',  json_encode($faq_schema));

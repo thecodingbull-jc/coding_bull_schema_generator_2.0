@@ -295,6 +295,7 @@ $average_rating = round($average_rating, 1);
             <div id="schema-generator-street-address"><label>Street Address: </label></br><input name="streetAddress" id="streetAddress" type="text"/><br/></div>
             <label>City: </label></br><input name="addressLocality" id="addressLocality" type="text"/><br/>
             <label>Province/State: </label></br><input name="addressRegion" id="addressRegion" type="text"/><br/>
+            <label>Country: </label></br><input name="addressCountry" id="addressCountry" type="text"/><br/>
             <label>Postal Code: </label></br><input name="postalCode" id="postalCode" type="text"/>
             <div id="schema-generator-amenity-feature"><label>Amenity Feature:(Seperate by comma) </label></br><input name="amenityFeature" id="amenityFeature" type="text"/></div>
         </div>

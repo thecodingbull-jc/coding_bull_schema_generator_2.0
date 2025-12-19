@@ -310,9 +310,9 @@ function generate_review_schema($review_post_type, $review_settings, $reviews_qu
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $single_review['author'] = get_post_field($field_name);
+                    $single_review['author'] = ['@type' => 'Person' , 'name'=>get_post_field($field_name)];
                 } elseif ($field_type == 'ACF') {
-                    $single_review['author'] = get_field($field_name);
+                    $single_review['author'] = ['@type' => 'Person' , 'name'=>get_field($field_name)];
                 }
             }
             if($review_settings['review-date-published']){
@@ -441,7 +441,7 @@ function get_aggregate_review() {
 }
 
 //Address List
-function get_address_list($service_area_query,$street_address_slug,$city_slug,$province_slug, $postal_slug){
+function get_address_list($service_area_query,$street_address_slug,$city_slug,$province_slug,$country_slug, $postal_slug){
     $address_schema = [];
     if ($service_area_query->have_posts()) {
         while ($service_area_query->have_posts()) {
@@ -490,6 +490,16 @@ function get_address_list($service_area_query,$street_address_slug,$city_slug,$p
                     $address['addressRegion'] = get_post_field($field_name,$post_id);
                 } elseif ($field_type == 'ACF') {
                     $address['addressRegion'] = get_field($field_name,$post_id);
+                }
+            }
+            if($country_slug){
+                $field = explode(',', $country_slug);
+                $field_name = $field[0];
+                $field_type = $field[1];
+                if ($field_type == 'built-in') {
+                    $address['addressCountry'] = get_post_field($field_name,$post_id);
+                } elseif ($field_type == 'ACF') {
+                    $address['addressCountry'] = get_field($field_name,$post_id);
                 }
             }
             if($postal_slug){

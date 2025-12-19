@@ -73,10 +73,11 @@ function homepage_generate_schema(){
         $schema['sameAs']=explode(',',$homepage_properties['social-media']);
     }
     //address
-    if($single_address && ($homepage_properties['addressLocality'] || $homepage_properties['addressRegion'] || $homepage_properties['postalCode'] || $homepage_properties['streetAddress'] )){
+    if($single_address && ($homepage_properties['addressLocality'] || $homepage_properties['addressRegion'] || $homepage_properties['postalCode'] || $homepage_properties['streetAddress'] || $homepage_properties['addressCountry'] )){
         $address_schema = [];
         $address_schema['addressLocality'] = $homepage_properties['addressLocality'];
         $address_schema['addressRegion'] = $homepage_properties['addressRegion'];
+        $address_schema['addressCountry'] = $homepage_properties['addressCountry'];
         $address_schema['postalCode'] = $homepage_properties['postalCode'];
         if($homepage_properties['hasStreetAddress']){
             $address_schema['streetAddress'] = $homepage_properties['streetAddress'];
@@ -163,7 +164,7 @@ function homepage_generate_schema(){
     }
     
     //areaServed
-    if(!$single_location){
+    if(!$single_address){
         $areaServed_schema = [];
         //get service area properties
         $service_area_properties = [];
@@ -286,8 +287,8 @@ function homepage_generate_schema(){
         wp_reset_postdata();
     }
     //address
-    if(!$single_location){
-        $address_schema = get_address_list($service_area_query,$service_area_properties['service-area-street-address'],$service_area_properties['service-area-city'],$service_area_properties['service-area-province'], $service_area_properties['service-area-postal-code']);
+    if(!$single_address){
+        $address_schema = get_address_list($service_area_query,$service_area_properties['service-area-street-address'],$service_area_properties['service-area-city'],$service_area_properties['service-area-province'],$service_area_properties['service-area-country'], $service_area_properties['service-area-postal-code']);
         if($address_schema){
             $schema["address"] = $address_schema;
         }
@@ -393,6 +394,6 @@ function homepage_generate_schema(){
     wp_send_json_success([
         //'properties' => $homepage_properties,
         'schema' => $schema,
-        'testing'=> $service_area_properties
+        'testing'=> $single_address
     ]);
 }

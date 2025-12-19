@@ -218,6 +218,14 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                     <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
                 <?php endforeach; ?>
             </select><br/>
+
+            <label>Country: </label></br>
+            <select name="service-area-country" id="schema-generator-service-area-province">
+                <option value="" selected>Select field name</option>
+                <?php foreach($all_fields as $slug => $label): ?>
+                    <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
+                <?php endforeach; ?>
+            </select><br/>
             
             <label>Postal code: </label></br>
             <select name="service-area-postal-code" id="schema-generator-service-area-postal-code">
