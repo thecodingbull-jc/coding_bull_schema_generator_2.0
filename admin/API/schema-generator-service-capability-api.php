@@ -318,6 +318,12 @@ function service_capability_generate_schema(){
                         }
                         $branch_schema["@id"] = $service_area_url . '#localbusiness';
                         $branch_schema["url"] = $service_area_url;
+                        
+                        //aggregate rating
+                        $aggregateRating_schema = get_aggregate_review();
+                        if(isset($aggregateRating_schema)){
+                            $branch_schema['aggregateRating'] = $aggregateRating_schema;
+                        }
                     }
                     $schema['provider'] = $provider_schema;
                     $schema['areaServed'] = $areaserved_schema;

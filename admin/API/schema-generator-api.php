@@ -399,7 +399,7 @@ function get_faq_object($post_id, $faq, $question, $answer) {
                 'name' => isset($row[$question]) ? $row[$question] : '',
                 'acceptedAnswer'   => [
                     "@type" => "Answer",
-                    "text" => isset($row[$answer]) ? $row[$answer] : ''],
+                    "text" => isset($row[$answer]) ? htmlspecialchars($row[$answer]) : ''],
             ];
         }
     }

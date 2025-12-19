@@ -318,6 +318,12 @@ function service_general_generate_schema(){
                         }
                         $branch_schema["@id"] = $service_area_url . '#localbusiness';
                         $branch_schema["url"] = $service_area_url;
+                        
+                        //aggregate rating
+                        $aggregateRating_schema = get_aggregate_review();
+                        if(isset($aggregateRating_schema)){
+                            $branch_schema['aggregateRating'] = $aggregateRating_schema;
+                        }
                     }
                     $schema['provider'] = $provider_schema;
                     $schema['areaServed'] = $areaserved_schema;
@@ -513,10 +519,10 @@ function service_general_generate_schema(){
                     $review_result = generate_review_schema($review_post_type,$review_settings,$review_query);
                     $schema['review'] = $review_result;
                 }
-                $aggregateRating_schema = get_aggregate_review();
-                if(isset($aggregateRating_schema)){
-                    $schema['aggregateRating'] = $aggregateRating_schema;
-                }
+                // $aggregateRating_schema = get_aggregate_review();
+                // if(isset($aggregateRating_schema)){
+                //     $schema['aggregateRating'] = $aggregateRating_schema;
+                // }
             }
 
             // Blog
