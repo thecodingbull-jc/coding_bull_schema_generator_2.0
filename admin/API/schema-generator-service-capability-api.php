@@ -561,10 +561,10 @@ function service_capability_generate_schema(){
                 }
             }
             //aggregate rating
-            $aggregateRating_schema = get_aggregate_review();
-            if(isset($aggregateRating_schema)){
-                $product_schema['aggregateRating'] = $aggregateRating_schema;
-            }
+            // $aggregateRating_schema = get_aggregate_review();
+            // if(isset($aggregateRating_schema)){
+            //     $product_schema['aggregateRating'] = $aggregateRating_schema;
+            // }
 
 
             $final_schema['@graph'] = [$schema,$branch_schema,$product_schema];
