@@ -75,10 +75,10 @@ function homepage_generate_schema(){
     //address
     if($single_address && ($homepage_properties['addressLocality'] || $homepage_properties['addressRegion'] || $homepage_properties['postalCode'] || $homepage_properties['streetAddress'] || $homepage_properties['addressCountry'] )){
         $address_schema = [];
-        $address_schema['addressLocality'] = $homepage_properties['addressLocality'];
-        $address_schema['addressRegion'] = $homepage_properties['addressRegion'];
-        $address_schema['addressCountry'] = $homepage_properties['addressCountry'];
-        $address_schema['postalCode'] = $homepage_properties['postalCode'];
+        $homepage_properties['addressLocality'] && $address_schema['addressLocality'] = $homepage_properties['addressLocality'];
+        $homepage_properties['addressRegion'] && $address_schema['addressRegion'] = $homepage_properties['addressRegion'];
+        $homepage_properties['addressCountry'] && $address_schema['addressCountry'] = $homepage_properties['addressCountry'];
+        $homepage_properties['postalCode'] && $address_schema['postalCode'] = $homepage_properties['postalCode'];
         if($homepage_properties['hasStreetAddress']){
             $address_schema['streetAddress'] = $homepage_properties['streetAddress'];
             $amanity_features= explode(',',$homepage_properties['amenityFeature']);

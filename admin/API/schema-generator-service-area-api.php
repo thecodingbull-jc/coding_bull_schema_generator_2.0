@@ -315,13 +315,13 @@ function service_area_generate_schema(){
                 if ($field_type == 'built-in') {
                     $street_address = get_post_field($field_name);
                     if($street_address){
-                        $address['streetAddress'] = $street_address;
+                        $street_address && $address['streetAddress'] = $street_address;
                     }
                     
                 } elseif ($field_type == 'ACF') {
                     $street_address = get_field($field_name);
                     if($street_address){
-                        $address['streetAddress'] = $street_address;
+                        $street_address && $address['streetAddress'] = $street_address;
                     }
                 }
             }
@@ -331,9 +331,11 @@ function service_area_generate_schema(){
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $address['addressLocality'] = get_post_field($field_name);
+                    $city = get_post_field($field_name);
+                    $city && $address['addressLocality'] = $city;
                 } elseif ($field_type == 'ACF') {
-                    $address['addressLocality'] = get_field($field_name);
+                    $city = get_field($field_name);
+                    $city && $address['addressLocality'] = $city;
                 }
             }
             if($saved_settings['service-area-province']){
@@ -341,9 +343,23 @@ function service_area_generate_schema(){
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $address['addressRegion'] = get_post_field($field_name);
+                    $province = get_post_field($field_name);
+                    $province && $address['addressRegion'] = $province;
                 } elseif ($field_type == 'ACF') {
-                    $address['addressRegion'] = get_field($field_name);
+                    $province = get_field($field_name);
+                    $province && $address['addressRegion'] = $province;
+                }
+            }
+            if($saved_settings['service-area-country']){
+                $field = explode(',', $saved_settings['service-area-country']);
+                $field_name = $field[0];
+                $field_type = $field[1];
+                if ($field_type == 'built-in') {
+                    $country = get_post_field($field_name);
+                    $country && $address['addressCountry'] = $country;
+                } elseif ($field_type == 'ACF') {
+                    $country = get_field($field_name);
+                    $country && $address['addressCountry'] = $country;
                 }
             }
             if($saved_settings['service-area-postal-code']){
@@ -351,9 +367,11 @@ function service_area_generate_schema(){
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $address['postalCode'] = get_post_field($field_name);
+                    $postal = get_post_field($field_name);
+                    $postal && $address['postalCode'] = $postal;
                 } elseif ($field_type == 'ACF') {
-                    $address['postalCode'] = get_field($field_name);
+                    $postal = get_field($field_name);
+                    $postal && $address['postalCode'] = $postal;
                 }
             }
 

@@ -477,9 +477,11 @@ function get_address_list($service_area_query,$street_address_slug,$city_slug,$p
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $address['addressLocality'] = get_post_field($field_name,$post_id);
+                    $city = get_post_field($field_name,$post_id);
+                    $city && $address['addressLocality'] = $city;
                 } elseif ($field_type == 'ACF') {
-                    $address['addressLocality'] = get_field($field_name,$post_id);
+                    $city = get_field($field_name,$post_id);
+                    $city && $address['addressLocality'] = $city;
                 }
             }
             if($province_slug){
@@ -487,9 +489,11 @@ function get_address_list($service_area_query,$street_address_slug,$city_slug,$p
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $address['addressRegion'] = get_post_field($field_name,$post_id);
+                    $province = get_post_field($field_name,$post_id);
+                    $province && $address['addressRegion'] = $province;
                 } elseif ($field_type == 'ACF') {
-                    $address['addressRegion'] = get_field($field_name,$post_id);
+                    $province = get_field($field_name,$post_id);
+                    $province && $address['addressRegion'] = $province;
                 }
             }
             if($country_slug){
@@ -497,9 +501,11 @@ function get_address_list($service_area_query,$street_address_slug,$city_slug,$p
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $address['addressCountry'] = get_post_field($field_name,$post_id);
+                    $country = get_post_field($field_name,$post_id);
+                    $country && $address['addressCountry'] = $country;
                 } elseif ($field_type == 'ACF') {
-                    $address['addressCountry'] = get_field($field_name,$post_id);
+                    $country = get_field($field_name,$post_id);
+                    $country && $address['addressCountry'] = $country;
                 }
             }
             if($postal_slug){
@@ -507,9 +513,11 @@ function get_address_list($service_area_query,$street_address_slug,$city_slug,$p
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $address['postalCode'] = get_post_field($field_name,$post_id);
+                    $postal = get_post_field($field_name,$post_id);
+                    $postal && $address['postalCode'] = $postal;
                 } elseif ($field_type == 'ACF') {
-                    $address['postalCode'] = get_field($field_name,$post_id);
+                    $postal = get_field($field_name,$post_id);
+                    $postal && $address['postalCode'] = $postal;
                 }
             }
             $address_schema[] = $address;

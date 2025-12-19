@@ -306,15 +306,11 @@ function service_capability_generate_schema(){
                             $field_type = $field[1];
                             if ($field_type == 'built-in') {
                                 $street_address = get_post_field($field_name,$service_area_id);
-                                if($street_address){
-                                    $branch_address['streetAddress'] = $street_address;
-                                }
+                                $street_address && $branch_address['streetAddress'] = $street_address;
                                 
                             } elseif ($field_type == 'ACF') {
                                 $street_address = get_field($field_name,$service_area_id);
-                                if($street_address){
-                                    $branch_address['streetAddress'] = $street_address;
-                                }
+                                $street_address && $branch_address['streetAddress'] = $street_address;
                             }
                         }
                         
@@ -323,9 +319,12 @@ function service_capability_generate_schema(){
                             $field_name = $field[0];
                             $field_type = $field[1];
                             if ($field_type == 'built-in') {
-                                $branch_address['addressLocality'] = get_post_field($field_name,$service_area_id);
+                                $city = get_post_field($field_name,$service_area_id);
+                                $city && $branch_address['addressLocality'] = $city;
+                                
                             } elseif ($field_type == 'ACF') {
-                                $branch_address['addressLocality'] = get_field($field_name,$service_area_id);
+                                $city = get_field($field_name,$service_area_id);
+                                $city && $branch_address['addressLocality'] = $city;
                             }
                         }
                         if($service_area_province){
@@ -333,9 +332,11 @@ function service_capability_generate_schema(){
                             $field_name = $field[0];
                             $field_type = $field[1];
                             if ($field_type == 'built-in') {
-                                $branch_address['addressRegion'] = get_post_field($field_name,$service_area_id);
+                                $province = get_post_field($field_name,$service_area_id);
+                                $province && $branch_address['addressRegion'] = $province;
                             } elseif ($field_type == 'ACF') {
-                                $branch_address['addressRegion'] = get_field($field_name,$service_area_id);
+                                $province = get_field($field_name,$service_area_id);
+                                $province && $branch_address['addressRegion'] = $province;
                             }
                         }
                         if($service_area_country){
@@ -343,9 +344,11 @@ function service_capability_generate_schema(){
                             $field_name = $field[0];
                             $field_type = $field[1];
                             if ($field_type == 'built-in') {
-                                $branch_address['addressCountry'] = get_post_field($field_name,$service_area_id);
+                                $country = get_post_field($field_name,$service_area_id);
+                                $country && $branch_address['addressCountry'] = $country;
                             } elseif ($field_type == 'ACF') {
-                                $branch_address['addressCountry'] = get_field($field_name,$service_area_id);
+                                $country= get_field($field_name,$service_area_id);
+                                $country && $branch_address['addressCountry'] = $country;
                             }
                         }
                         if($service_area_postal){
@@ -353,9 +356,11 @@ function service_capability_generate_schema(){
                             $field_name = $field[0];
                             $field_type = $field[1];
                             if ($field_type == 'built-in') {
-                                $branch_address['postalCode'] = get_post_field($field_name,$service_area_id);
+                                $postal = get_post_field($field_name,$service_area_id);
+                                $postal && $branch_address['postalCode'] = $postal;
                             } elseif ($field_type == 'ACF') {
-                                $branch_address['postalCode'] = get_field($field_name,$service_area_id);
+                                $postal = get_field($field_name,$service_area_id);
+                                $postal && $branch_address['postalCode'] = $postal;
                             }
                         } 
                         $branch_schema["address"] = $branch_address;
