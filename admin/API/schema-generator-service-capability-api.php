@@ -334,7 +334,6 @@ function service_capability_generate_schema(){
             }
            
             //Reviews
-            $aggregateRating_schema = get_aggregate_review();
             $review_post_type = $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT value FROM $table_name WHERE page = %s and property = %s",
@@ -398,9 +397,10 @@ function service_capability_generate_schema(){
                     $review_result = generate_review_schema($review_post_type,$review_settings,$review_query);
                     $schema['review'] = $review_result;
                 }
-                if(isset($aggregateRating_schema)){
-                    $schema['aggregateRating'] = $aggregateRating_schema;
-                }
+                // $aggregateRating_schema = get_aggregate_review();
+                // if(isset($aggregateRating_schema)){
+                //     $schema['aggregateRating'] = $aggregateRating_schema;
+                // }
             }
 
             // Blog
