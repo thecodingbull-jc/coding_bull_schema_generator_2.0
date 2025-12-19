@@ -363,8 +363,11 @@ function service_capability_generate_schema(){
                                 $postal && $branch_address['postalCode'] = $postal;
                             }
                         } 
-                        $branch_schema["address"] = $branch_address;
-                        $branches_schema[] = $branch_schema;
+                        if($street_address){
+                            $branch_schema["address"] = $branch_address;
+                            $branches_schema[] = $branch_schema;
+                        }
+                        
                         //aggregate rating
                         // $aggregateRating_schema = get_aggregate_review();
                         // if(isset($aggregateRating_schema)){
