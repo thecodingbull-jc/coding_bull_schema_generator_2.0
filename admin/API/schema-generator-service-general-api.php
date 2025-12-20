@@ -6,7 +6,6 @@ function service_general_generate_schema(){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
     $schema=[];
-    $branches_schema=[];
     //fetch global setting
     $global_rows = $wpdb->get_results(
         $wpdb->prepare(
@@ -254,6 +253,7 @@ function service_general_generate_schema(){
                 if ($service_area_query->have_posts()) {
                     $provider_schema = [];
                     $areaserved_schema = [];
+                    $branches_schema=[];
                     while ($service_area_query->have_posts()) {
                         $service_area_query->the_post();  
                         $service_area_id = get_the_ID();
