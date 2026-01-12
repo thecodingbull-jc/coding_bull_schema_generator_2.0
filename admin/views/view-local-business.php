@@ -248,17 +248,17 @@ $average_rating = round($average_rating, 1);
         </div>
 
         <div>
-            <label>Name (Homepage Metatitle)</label><br>
+            <label><b>Name (Homepage Metatitle)</b></label><br>
             <input value="<?php echo !empty($saved_settings['home_name']) ? $saved_settings['home_name'] : ''; ?>" type="text" id="schema-generator-home-name" name="name"/>
         </div>
 
         <div>
-            <label>Description (Homepage Metadescription)</label><br>
+            <label><b>Description (Homepage Metadescription)</b></label><br>
             <input value="<?php echo !empty($saved_settings['home_description']) ? $saved_settings['home_description'] : ''; ?>" type="text" id="schema-generator-home-description" name="description"/>
         </div>
         
         <div>
-            <label for="businessType">Business Type:</label><br/>
+            <label for="businessType"><b>Business Type Category:</b></label><br/>
             <select id="businessType" name="businessType">
                 <option value="" disabled selected>Select business type</option>
                 <option value="HomeAndConstructionBusiness">Home And Construction Business</option>
@@ -274,7 +274,7 @@ $average_rating = round($average_rating, 1);
             <label><b>Logo: </b>Copy the URL (including domain) from Media Library</label><br/><input name="logo" type="text"/>
         </div>
         <div>
-            <label>Keywords (Seperate by comma): </label><br/>
+            <label><b>Keywords (Seperate by Comma):</b> If multiple service area, then just {job_title} and {service} without {city}, including primary and secondary keywords. If singular location, then add all {city} {job_title} and {city} {service}, including primary & secondary keywords. If unsure, make a ticket for Digital Marketing person to enter.</label><br/>
             <textarea name="keywords" style="height:100px;"></textarea>
         </div>
         
@@ -284,7 +284,7 @@ $average_rating = round($average_rating, 1);
         </div>
 
          <div>
-            <label><b>Social Media Links (Seperate By Comma): </b>All social media including all URLs of all Goolge Business Profiles</label><br/>
+            <label><b>Social Media Links (Seperate By Comma): </b>All social media including BBB, URLs of all Goolge Business Profiles</label><br/>
             <textarea name="social-media" style="height:100px;"></textarea>
         </div>
         
@@ -330,7 +330,7 @@ $average_rating = round($average_rating, 1);
         </div>
 
         <div>
-            <label><b>Awards(Seperate by comma): </b></label><br/>
+            <label><b>Awards(Seperate by comma):</b> Add all the titles under Awards or Affiliations section. Business license, insurance info, ok.</label><br/>
             <textarea name="awards"></textarea>
         </div>
 
