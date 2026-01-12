@@ -248,12 +248,12 @@ $average_rating = round($average_rating, 1);
         </div>
 
         <div>
-            <label>Name</label><br>
+            <label>Name (Homepage Metatitle)</label><br>
             <input value="<?php echo !empty($saved_settings['home_name']) ? $saved_settings['home_name'] : ''; ?>" type="text" id="schema-generator-home-name" name="name"/>
         </div>
 
         <div>
-            <label>Description</label><br>
+            <label>Description (Homepage Metadescription)</label><br>
             <input value="<?php echo !empty($saved_settings['home_description']) ? $saved_settings['home_description'] : ''; ?>" type="text" id="schema-generator-home-description" name="description"/>
         </div>
         
@@ -265,23 +265,27 @@ $average_rating = round($average_rating, 1);
                 <option value="MedicalBusiness">Medical Business</option>
             </select>
             <div>
-                <label>Business Type: </label><br/><input name="businessType-text" type="text"/>
+                <br />
+                <label><b>Business Type:</b> Search on schema.org the job title of this client. If no result, leave blank.</label><br/><input name="businessType-text" type="text"/>
             </div>
         </div>
 
         <div>
-            <label>Logo: </label><br/><input name="logo" type="text"/>
+            <label><b>Logo: </b>Copy the URL (including domain) from Media Library</label><br/><input name="logo" type="text"/>
         </div>
         <div>
-            <label>Keywords(Seperate by comma): </label><br/><textarea name="keywords" style="height:100px;"></textarea>
+            <label>Keywords (Seperate by comma): </label><br/>
+            <textarea name="keywords" style="height:100px;"></textarea>
         </div>
         
         <div>
-            <label>Telephones(Seperate by comma): </label><br/><textarea name="telephone" style="height:100px;"></textarea>
+            <label><b>Telephones (Seperate by comma):</b> All Call Tracking Metrics numbers & client's official number. Forma: (XXX) ZZZ-YYYY</label><br/>
+            <textarea name="telephone" style="height:100px;"></textarea>
         </div>
 
          <div>
-            <label>Social media(Seperate by comma): </label><br/><textarea name="social-media" style="height:100px;"></textarea>
+            <label><b>Social Media Links (Seperate By Comma): </b>All social media including all URLs of all Goolge Business Profiles</label><br/>
+            <textarea name="social-media" style="height:100px;"></textarea>
         </div>
         
         
@@ -301,11 +305,11 @@ $average_rating = round($average_rating, 1);
         </div>
 
         <div>
-            <label>Price Rage: </label><br/><input name="priceRange" type="number" min="1" max="5"/>
+            <label><b>Price Rage: </b>1 is cheapes ($), 5 is highest ($$$$$)</label><br/><input name="priceRange" type="number" min="1" max="5"/>
         </div>
 
         <div>
-            <label>Opening Hours</label></br>
+            <label><b>Opening Hours</b> 24-hour format. If 24-hour operations, 00:00-23:59. If 8am to 5pm, 08:00-17:00.</label></br>
             <label>MONDAY: </label></br><input name="monday" type="text"/><br/>
             <label>TUEDAY: </label></br><input name="tuesday" type="text"/><br/>
             <label>WEDDAY: </label></br><input name="wednesday" type="text"/><br/>
@@ -321,18 +325,18 @@ $average_rating = round($average_rating, 1);
         </div>
 
         <div>
-            <label>Payments Accepted(Seperate by comma)</label><br/>
-            <textarea name="paymentAccepted"></textarea>
+            <label><b>Payments Accepted(Seperate by Comma): </b>Default methods provided, confirm with client to or remove payment methods.</label><br/>
+            <textarea name="paymentAccepted">cash, checks, credit cards, debit cards, bank transfers, e-transfers</textarea>
         </div>
 
         <div>
-            <label>Awards(Seperate by comma)</label><br/>
+            <label><b>Awards(Seperate by comma): </b></label><br/>
             <textarea name="awards"></textarea>
         </div>
 
         <div>
-            <label>Knows Language(Seperate by comma, format: "name|alternate name")</label><br/>
-            <textarea name="knowsLanguage"></textarea>
+            <label><b>Knows Language(Seperate by comma, format: "name|alternate name"): </b> Confirm with client. Look up alternate name on <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry" target="_blank">IANA.org</a></label><br/>
+            <textarea name="knowsLanguage">english|en</textarea>
         </div>
 
         <!-- <div style="display:flex; flex-direction:column; gap:8px;">
@@ -406,7 +410,8 @@ $average_rating = round($average_rating, 1);
                 </select>
             </div>
         </div> -->
-
+        
+        <!--
         <div style="display:flex; flex-direction:column; gap:8px;">
             <label>hasOfferCatalog(General)</label>
             <div>
@@ -472,7 +477,7 @@ $average_rating = round($average_rating, 1);
                 </select>
             </div>
         </div>
-            
+        -->
         <div id="schema-generator-medical-business-section" style="display:flex; flex-direction:column; gap:20px;">
             <div>
                 <h4>Medical Business Schema</h4>

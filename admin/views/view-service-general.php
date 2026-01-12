@@ -96,7 +96,8 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select>
         </div>
-
+        
+        <!--
         <div style="display:flex; flex-direction:column; gap:8px;">
             <label>hasOfferCatalog</label>
             <div>
@@ -110,6 +111,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
             </div>
             
         </div>
+        -->
 
     </div>  
     <div style="width:50%;">

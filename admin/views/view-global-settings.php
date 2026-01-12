@@ -64,7 +64,7 @@ function tcb_schema_get_selected_posts($property_name) {
             <div>
                 <input type="checkbox" id="schema-generator-single-location" name="schema-single-location"
                     <?php checked( !empty($saved_settings['single_location']) ); ?> />
-                <label>Single Location</label>
+                <label><b>Single Location</b> If checked, no service_area related schema will show. "Local Business" tab will ask for the business address info.</label>
             </div>
             
             <div>

@@ -108,7 +108,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
         </div>
         
         <div>
-            <label>Telephone</label><br>
+            <label><b>Telephone: </b>If left unselected, Telephone input from "Local Business" will be used. </label><br>
             <select name="service-area-telephone" id="schema-generator-service-area-telephone">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
@@ -117,7 +117,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
             </select>
         </div>
         <div>
-            <label>Opening Hours</label>
+            <label><b>Opening Hours:</b> If left unselected, Opening Hours input from "Local Business" will be used.</label>
             <div>
                 <label>Monday</label><br>
                 <select name="service-area-monday" id="schema-generator-service-area-monday">
@@ -203,7 +203,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select></div>
             
-            <label>City: </label></br>
+            <label><b>City: </b> Usually ACF field is named addressLocality</label></br>
             <select name="service-area-city" id="schema-generator-service-area-city">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
@@ -211,7 +211,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select><br/>
             
-            <label>Province: </label></br>
+            <label><b>Province / State:</b> Usually ACF field is named addressRegion</label></br>
             <select name="service-area-province" id="schema-generator-service-area-province">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
@@ -219,7 +219,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select><br/>
 
-            <label>Country: </label></br>
+            <label><b>Country:</b> Usually ACF field is named County Code</label></br>
             <select name="service-area-country" id="schema-generator-service-area-province">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
@@ -227,14 +227,14 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select><br/>
             
-            <label>Postal code: </label></br>
+            <label>Postal Code: </label></br>
             <select name="service-area-postal-code" id="schema-generator-service-area-postal-code">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($label); ?></option>
                 <?php endforeach; ?>
             </select><br/>
-            <div id="schema-generator-service-area-amenity-feature"><label>Amenity Feature: </label></br>
+            <div id="schema-generator-service-area-amenity-feature"><label>Amenity Feature: (Coming Soon)</label></br>
             <select name="service-area-amenity-feature">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
@@ -245,7 +245,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
 
         <div>
             <label>areaServed</label></br>
-            <label>ID(Wikipedia Link): </label></br>
+            <label>ID (Wikipedia Link): </label></br>
             <select name="service-area-street-areaserved-id" id="schema-generator-service-area-areaserved-id">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
@@ -253,11 +253,12 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select>
         </div>
-
+        
+        <!--
         <div style="display:flex; flex-direction:column; gap:8px;">
             <label>hasOfferCatalog</label>
             <div>
-                <label>hasOfferCatalog name</label><br>
+                <label>hasOfferCatalog name (Deprecated)</label><br>
                 <select name="capability-hasOfferCatalog-name" id="schema-generator-capability-hasOfferCatalog-name">
                     <option value="" selected>Select field name</option>
                     <?php foreach($all_fields as $slug => $label): ?>
@@ -267,7 +268,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
             </div>
             
             <div>
-                <label>hasOfferCatalog Description</label><br>
+                <label>hasOfferCatalog Description (Deprecated)</label><br>
                 <select name="capability-hasOfferCatalog-description" id="schema-generator-capability-hasOfferCatalog-description">
                     <option value="" selected>Select field name</option>
                     <?php foreach($all_fields as $slug => $label): ?>
@@ -276,6 +277,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 </select>
             </div>
         </div>
+        -->
                
     </div>  
     <!--Schema Generate Result-->
