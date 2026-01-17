@@ -407,9 +407,9 @@ function service_area_generate_schema(){
                 $field_name = $field[0];
                 $field_type = $field[1];
                 if ($field_type == 'built-in') {
-                    $areaServed['addressLocality'] = get_post_field($field_name);
+                    $areaServed['name'] = get_post_field($field_name);
                 } elseif ($field_type == 'ACF') {
-                    $areaServed['addressLocality'] = get_field($field_name);
+                    $areaServed['name'] = get_field($field_name);
                 }
             }
             if($saved_settings['service-area-street-areaserved-id']){
