@@ -558,7 +558,11 @@ function service_area_generate_schema(){
             );
             $faq_schema= get_faq_object($post_id, $faq, $question, $answer);
             update_post_meta($post_id, '_injected_script',  json_encode($schema));
-            update_post_meta($post_id, '_injected_faq_script',  json_encode($faq_schema));
+            if($faq_schema['mainEntity']){
+                update_post_meta($post_id, '_injected_faq_script',  json_encode($faq_schema));
+            }else{
+                update_post_meta($post_id, '_injected_faq_script',  "");
+            }
             $results[] = json_encode($schema);
         }
         wp_reset_postdata();
