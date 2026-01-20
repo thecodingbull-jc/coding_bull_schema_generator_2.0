@@ -374,9 +374,7 @@ function service_area_generate_schema(){
                     $postal && $address['postalCode'] = $postal;
                 }
             }
-            if($street_address){
-                $schema['address'] = $address;
-            }
+            $schema['address'] = $address;
             
             //amenity feature
             if($saved_settings['service-area-amenity-feature']){

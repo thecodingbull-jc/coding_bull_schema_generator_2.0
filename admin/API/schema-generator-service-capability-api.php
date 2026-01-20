@@ -363,9 +363,7 @@ function service_capability_generate_schema(){
                                 $postal && $branch_address['postalCode'] = $postal;
                             }
                         } 
-                        if($street_address){
-                            $branch_schema["address"] = $branch_address;
-                        }
+                        $branch_schema["address"] = $branch_address;
                         $branches_schema[] = $branch_schema;
                         
                         //aggregate rating
