@@ -62,8 +62,9 @@ function save_tcb_schema_bulk() {
     //update to database
 
     foreach ($data as $item) {
-        $property = sanitize_text_field($item['property'] ?? '');
-        $value    = sanitize_text_field($item['value'] ?? '');
+        $property = sanitize_text_field( wp_unslash( $item['property'] ?? '' ) );
+        $raw_value = $item['value'] ?? '';
+        $value = sanitize_text_field( wp_unslash( $raw_value ) );
         if($page == "home_page" && $property=="hasStreetAddress" && !$value ){
             
             $properties = ['streetAddress', 'addressLocality', 'addressRegion', 'postalCode'];
