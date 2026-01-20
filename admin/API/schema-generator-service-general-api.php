@@ -656,7 +656,11 @@ function service_general_generate_schema(){
                     $blog_schema[] = $single_blog;
                 }   
                 wp_reset_postdata();
-                $schema["isRelatedTo"] = array_merge($schema["isRelatedTo"],$blog_schema);
+                
+                $schema["isRelatedTo"] = array_merge(
+                    isset($schema["isRelatedTo"]) && is_array($schema["isRelatedTo"]) ? $schema["isRelatedTo"] : [],
+                    isset($blog_schema) && is_array($blog_schema) ? $blog_schema : []
+                );
 
             }
 
