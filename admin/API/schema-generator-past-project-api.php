@@ -2,7 +2,7 @@
 //generate schema for service general pages
 add_action('wp_ajax_past_project_generate_schema', 'past_project_generate_schema');
 
-function past_project_generate_schema(){
+function past_project_generate_schema( $silent = false ){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
 
@@ -329,10 +329,12 @@ function past_project_generate_schema(){
             $results[] = json_encode($schema);
         }
     //wp_reset_postdata();
-        wp_send_json_success([
-            'schema' => $results,
-            'testing'=> $service_area_settings,
-        ]);
+        if ( ! $silent ) {
+            wp_send_json_success([
+                'schema' => $results,
+                'testing'=> $service_area_settings,
+            ]);
+        }
 
     }
     

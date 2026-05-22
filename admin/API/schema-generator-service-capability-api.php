@@ -2,7 +2,7 @@
 //generate schema for service capability pages
 add_action('wp_ajax_service_capability_generate_schema', 'service_capability_generate_schema');
 
-function service_capability_generate_schema(){
+function service_capability_generate_schema( $silent = false ){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
     $schema=[];
@@ -651,9 +651,11 @@ function service_capability_generate_schema(){
         }
         wp_reset_postdata();
 
-        wp_send_json_success([
-            'schema' => $results,
-            'test'=>$service_area_term_ids
-        ]);
+        if ( ! $silent ) {
+            wp_send_json_success([
+                'schema' => $results,
+                'test'=>$service_area_term_ids
+            ]);
+        }
     }
 }

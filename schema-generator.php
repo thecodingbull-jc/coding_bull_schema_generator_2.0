@@ -91,3 +91,84 @@ add_action('wp_head', function() {
         }
     }
 });
+
+// --- Regenerate All Schemas utility ---
+
+function tcb_run_all_schema_generators() {
+    homepage_generate_schema( true );
+    service_area_generate_schema( true );
+    service_general_generate_schema( true );
+    service_capability_generate_schema( true );
+    blog_generate_schema( true );
+    past_project_generate_schema( true );
+}
+
+// Nightly cron
+add_action( 'init', function() {
+    if ( ! wp_next_scheduled( 'tcb_nightly_schema_regeneration' ) ) {
+        wp_schedule_event( strtotime( 'midnight' ), 'daily', 'tcb_nightly_schema_regeneration' );
+    }
+});
+add_action( 'tcb_nightly_schema_regeneration', 'tcb_run_all_schema_generators' );
+
+// Admin bar button
+add_action( 'admin_bar_menu', function( WP_Admin_Bar $wp_admin_bar ) {
+    if ( ! current_user_can( 'manage_options' ) ) return;
+    $wp_admin_bar->add_node([
+        'id'    => 'tcb-regenerate-schema',
+        'title' => 'Regenerate Schema',
+        'href'  => '#',
+    ]);
+}, 100 );
+
+// Inline script + style for the admin bar button (frontend + admin)
+function tcb_regenerate_schema_bar_script() {
+    if ( ! current_user_can( 'manage_options' ) || ! is_admin_bar_showing() ) return;
+    $ajax_url = esc_url( admin_url( 'admin-ajax.php' ) );
+    $nonce    = wp_create_nonce( 'tcb_regenerate_all' );
+    ?>
+    <style>
+        #wp-admin-bar-tcb-regenerate-schema > .ab-item { cursor: pointer; }
+        #wp-admin-bar-tcb-regenerate-schema.tcb-running > .ab-item { opacity: 0.6; pointer-events: none; }
+    </style>
+    <script>
+    (function($) {
+        $(document).on('click', '#wp-admin-bar-tcb-regenerate-schema > .ab-item', function(e) {
+            e.preventDefault();
+            var $node = $('#wp-admin-bar-tcb-regenerate-schema');
+            if ($node.hasClass('tcb-running')) return;
+            var $link = $node.find('.ab-item').first();
+            var originalText = $link.text();
+            $node.addClass('tcb-running');
+            $link.text('Regenerating...');
+            $.post('<?php echo $ajax_url; ?>', {
+                action: 'tcb_regenerate_all_schemas',
+                nonce:  '<?php echo $nonce; ?>'
+            })
+            .done(function(res) {
+                $link.text(res.success ? 'Done!' : 'Error');
+            })
+            .fail(function() {
+                $link.text('Error');
+            })
+            .always(function() {
+                $node.removeClass('tcb-running');
+                setTimeout(function() { $link.text(originalText); }, 3000);
+            });
+        });
+    })(jQuery);
+    </script>
+    <?php
+}
+add_action( 'wp_footer',    'tcb_regenerate_schema_bar_script' );
+add_action( 'admin_footer', 'tcb_regenerate_schema_bar_script' );
+
+// AJAX handler for the admin bar button
+add_action( 'wp_ajax_tcb_regenerate_all_schemas', function() {
+    check_ajax_referer( 'tcb_regenerate_all', 'nonce' );
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( [ 'message' => 'Unauthorized' ] );
+    }
+    tcb_run_all_schema_generators();
+    wp_send_json_success( [ 'message' => 'All schemas regenerated.' ] );
+} );

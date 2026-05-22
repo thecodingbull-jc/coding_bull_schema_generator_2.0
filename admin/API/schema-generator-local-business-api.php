@@ -3,7 +3,7 @@
 //generate schema for home page
 add_action('wp_ajax_homepage_generate_schema', 'homepage_generate_schema');
 
-function homepage_generate_schema(){
+function homepage_generate_schema( $silent = false ){
     global $wpdb;
     $table_name = $wpdb->prefix . 'tcb_schema';
     //get homepage properties
@@ -391,9 +391,11 @@ function homepage_generate_schema(){
     update_option('homepage_jsonld_script', json_encode($schema));
 
     //wp_reset_postdata();
-    wp_send_json_success([
-        //'properties' => $homepage_properties,
-        'schema' => $schema,
-        'testing'=> $single_address
-    ]);
+    if ( ! $silent ) {
+        wp_send_json_success([
+            //'properties' => $homepage_properties,
+            'schema' => $schema,
+            'testing'=> $single_address
+        ]);
+    }
 }
