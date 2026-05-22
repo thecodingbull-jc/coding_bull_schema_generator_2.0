@@ -211,7 +211,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select><br/>
             
-            <label><b>Province / State:</b> Usually ACF field is named addressRegion</label></br>
+            <label><b>Province / State:</b> Usually ACF field is named addressRegion; Must enter 2-letter code: BC, ON, WA, etc. </label></br>
             <select name="service-area-province" id="schema-generator-service-area-province">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
@@ -219,7 +219,7 @@ $all_fields = array_merge($builtin_fields, $acf_fields,$taxonomy_fields);
                 <?php endforeach; ?>
             </select><br/>
 
-            <label><b>Country:</b> Usually ACF field is named County Code</label></br>
+            <label><b>Country:</b> Usually ACF field is named County Code. Must enter 2-letter code: CA, US, FR, etc. </label></br>
             <select name="service-area-country" id="schema-generator-service-area-province">
                 <option value="" selected>Select field name</option>
                 <?php foreach($all_fields as $slug => $label): ?>
