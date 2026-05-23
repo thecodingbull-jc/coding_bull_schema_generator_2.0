@@ -388,6 +388,48 @@ function homepage_generate_schema( $silent = false ){
             $schema['hasCertification']=$hasCertification_schema;
         }
     }
+    // --- WebSite schema with agency creator credit ---
+    $agency_name = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT value FROM $table_name WHERE page = %s AND property = %s",
+            'global', 'agency_name'
+        )
+    );
+    $agency_url = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT value FROM $table_name WHERE page = %s AND property = %s",
+            'global', 'agency_url'
+        )
+    );
+    $agency_description = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT value FROM $table_name WHERE page = %s AND property = %s",
+            'global', 'agency_description'
+        )
+    );
+
+    if ( $agency_name && $agency_url ) {
+        $creator = [
+            '@type' => 'Organization',
+            'name'  => $agency_name,
+            'url'   => $agency_url,
+        ];
+        if ( $agency_description ) {
+            $creator['description'] = $agency_description;
+        }
+        $website_schema = [
+            '@context' => 'https://schema.org',
+            '@type'    => 'WebSite',
+            '@id'      => $home_url . '/#website',
+            'url'      => $home_url,
+            'name'     => $homepage_properties['name'] ?? '',
+            'creator'  => $creator,
+        ];
+        update_option( 'homepage_website_jsonld_script', json_encode( $website_schema ) );
+    } else {
+        delete_option( 'homepage_website_jsonld_script' );
+    }
+
     update_option('homepage_jsonld_script', json_encode($schema));
 
     //wp_reset_postdata();

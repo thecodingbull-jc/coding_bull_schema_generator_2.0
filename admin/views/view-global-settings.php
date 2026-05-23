@@ -196,7 +196,7 @@ function tcb_schema_get_selected_posts($property_name) {
                         </option>
                     <?php endforeach; ?>
                 </select>
-            </div> 
+            </div>
             <div>
                 <label>Past Project Pages Definition: </label>
                 <select id="schema-generator-past-project-page-definition" name="schema-generator-past-project-page-definition">
@@ -208,6 +208,162 @@ function tcb_schema_get_selected_posts($property_name) {
                         </option>
                     <?php endforeach; ?>
                 </select>
+            </div>
+
+            <div>
+                <h4>Web Agency Credit</h4>
+                <p style="font-size:13px; color:#555; margin-bottom:10px;">
+                    When name and URL are set, a <code>WebSite</code> schema with a <code>creator</code> property will be output on the front page to credit the agency that designed and built this site.
+                </p>
+                <div style="margin-bottom:10px;">
+                    <label for="schema-generator-agency-name"><b>Web Agency Name:</b></label><br>
+                    <input type="text" id="schema-generator-agency-name" name="schema-generator-agency-name"
+                           value="<?php echo esc_attr($saved_settings['agency_name'] ?? 'Coding Bull - Web Design Company & Digital Marketing Agency'); ?>"
+                           style="width:400px;" />
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label for="schema-generator-agency-url"><b>Web Agency URL:</b></label><br>
+                    <input type="text" id="schema-generator-agency-url" name="schema-generator-agency-url"
+                           value="<?php echo esc_attr($saved_settings['agency_url'] ?? 'https://thecodingbull.com/'); ?>"
+                           style="width:400px;" />
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label for="schema-generator-agency-description"><b>Web Agency Description:</b></label><br>
+                    <input type="text" id="schema-generator-agency-description" name="schema-generator-agency-description"
+                           value="<?php echo esc_attr($saved_settings['agency_description'] ?? 'We help service-based businesses fill up their sales pipeline by getting their website design & digital marketing right.'); ?>"
+                           style="width:400px;" />
+                </div>
+            </div>
+
+            <div>
+                <h4>How To Make Different Content Show In Different Schema</h4>
+
+                <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
+                    <summary style="cursor:pointer; font-weight:600; color:#1d4ed8;">🏠 Homepage Schema</summary>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.6;">
+                        <div style="background:white; border-left:3px solid #3b82f6; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Employee appears on homepage schema when:</strong><br>
+                            All published employee posts appear — no taxonomy filter applied.
+                        </div>
+                        <div style="background:white; border-left:3px solid #f59e0b; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Review appears on homepage schema when:</strong><br>
+                            All published review posts appear as aggregateRating — no taxonomy filter applied.
+                        </div>
+                        <div style="background:white; border-left:3px solid #10b981; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Service area appears on homepage schema when:</strong><br>
+                            Service area posts with the configured service area taxonomy term appear as <em>areaServed</em>.
+                            Only applies when <strong>Single Location</strong> is unchecked — if checked, the homepage address is used instead.
+                        </div>
+                        <div style="background:white; border-left:3px solid #6b7280; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Blog articles, service general pages, service capability pages, and past projects do NOT appear on homepage schema.</strong>
+                        </div>
+                    </div>
+                </details>
+
+                <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
+                    <summary style="cursor:pointer; font-weight:600; color:#1d4ed8;">📍 Service Area Page Schema</summary>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.6;">
+                        <div style="background:white; border-left:3px solid #3b82f6; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Employee appears on service area page schema when:</strong><br>
+                            The employee post shares <em>at least one</em> service area taxonomy term with the service area page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #f59e0b; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Review appears on service area page schema when:</strong><br>
+                            The review post shares <em>at least one</em> service area taxonomy term with the service area page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #6b7280; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Blog articles, service general pages, service capability pages, and past projects do NOT appear on service area page schema.</strong>
+                        </div>
+                    </div>
+                </details>
+
+                <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
+                    <summary style="cursor:pointer; font-weight:600; color:#1d4ed8;">🛠️ Service General Page Schema</summary>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.6;">
+                        <div style="background:white; border-left:3px solid #3b82f6; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Capability page appears on service general page schema when:</strong><br>
+                            The capability post shares <em>at least one</em> service area taxonomy term with the general page
+                            <strong>AND</strong> has the capability taxonomy term set in global settings.
+                        </div>
+                        <div style="background:white; border-left:3px solid #10b981; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Blog article appears on service general page schema when:</strong><br>
+                            The blog post shares the same <em>service taxonomy</em> term as the general page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #f59e0b; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Review appears on service general page schema when:</strong><br>
+                            The review post shares the same <em>service area taxonomy</em> term
+                            <strong>AND</strong> the same <em>service taxonomy</em> term as the general page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #8b5cf6; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Past project appears on service general page schema when:</strong><br>
+                            The past project shares the same <em>service taxonomy</em> term
+                            <strong>AND</strong> the same <em>service area taxonomy</em> term as the general page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #6b7280; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Employee pages do NOT appear on service general page schema.</strong>
+                        </div>
+                    </div>
+                </details>
+
+                <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
+                    <summary style="cursor:pointer; font-weight:600; color:#1d4ed8;">⚙️ Service Capability Page Schema</summary>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.6;">
+                        <div style="background:white; border-left:3px solid #f59e0b; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Review appears on service capability page schema when:</strong><br>
+                            The review post shares <em>at least one</em> service area taxonomy term
+                            <strong>AND</strong> at least one service taxonomy term with the capability page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #10b981; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Blog article appears on service capability page schema when:</strong><br>
+                            The blog post shares the same <em>service taxonomy</em> term as the capability page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #8b5cf6; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Past project appears on service capability page schema when:</strong><br>
+                            The past project shares the same <em>service taxonomy</em> term as the capability page.
+                        </div>
+                        <div style="background:white; border-left:3px solid #6b7280; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Employee pages do NOT appear on service capability page schema.</strong>
+                        </div>
+                    </div>
+                </details>
+
+                <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
+                    <summary style="cursor:pointer; font-weight:600; color:#1d4ed8;">📝 Blog Page Schema</summary>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.6;">
+                        <div style="background:white; border-left:3px solid #3b82f6; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Service general page or service capability page appears in blog page schema when:</strong><br>
+                            The service post shares the same <em>service taxonomy</em> term as the blog post
+                            <strong>AND</strong> is tagged as either a general or capability page type. These appear under <em>mentions</em>.
+                        </div>
+                        <div style="background:white; border-left:3px solid #6b7280; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Reviews, employees, and past projects do NOT appear on blog page schema.</strong>
+                        </div>
+                    </div>
+                </details>
+
+                <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
+                    <summary style="cursor:pointer; font-weight:600; color:#1d4ed8;">📁 Past Project Page Schema</summary>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.6;">
+                        <div style="background:white; border-left:3px solid #3b82f6; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Service general page or service capability page appears in past project page schema when:</strong><br>
+                            The service post shares the same <em>service taxonomy</em> term
+                            <strong>AND</strong> the same <em>service area taxonomy</em> term as the past project. These appear under <em>about</em>.
+                        </div>
+                        <div style="background:white; border-left:3px solid #6b7280; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Reviews, blog articles, and employees do NOT appear on past project page schema.</strong>
+                        </div>
+                    </div>
+                </details>
+
+                <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
+                    <summary style="cursor:pointer; font-weight:600; color:#1d4ed8;">👤 Employee Page Schema</summary>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.6;">
+                        <div style="background:white; border-left:3px solid #6b7280; padding:8px 12px; border-radius:0 4px 4px 0;">
+                            <strong>Employee pages do not have their own standalone schema.</strong><br>
+                            Employee data appears within <em>Homepage</em> and <em>Service Area page</em> schemas instead.
+                        </div>
+                    </div>
+                </details>
             </div>
             
         </div> 
@@ -358,6 +514,9 @@ jQuery(document).ready(function($){
                 manual_service_general_posts:getSelectedPostsByDiv("sc_select_service_general_pages"),
                 manual_service_capability_posts:getSelectedPostsByDiv("sc_select_service_capability_pages"),
                 past_project_posttype: $('#schema-generator-past-project-page-definition').val(),
+                agency_name:        $('#schema-generator-agency-name').val(),
+                agency_url:         $('#schema-generator-agency-url').val(),
+                agency_description: $('#schema-generator-agency-description').val(),
             }
         };
         console.log(data);

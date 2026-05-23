@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Schema Generator
  * Description: A framework plugin for generating schema markup with multiple configuration tabs.
- * Version: 1.0.21
+ * Version: 1.0.22
  * Author: The Coding Bull
  * Text Domain: schema-generator
  */
@@ -64,6 +64,15 @@ add_action('admin_enqueue_scripts', function($hook) {
 add_action('wp_head', function() {
     if (is_front_page()) {
         $jsonld = get_option('homepage_jsonld_script');
+        if ($jsonld) {
+            echo '<script type="application/ld+json">' . wp_json_encode(json_decode($jsonld)) . '</script>';
+        }
+    }
+});
+
+add_action('wp_head', function() {
+    if (is_front_page()) {
+        $jsonld = get_option('homepage_website_jsonld_script');
         if ($jsonld) {
             echo '<script type="application/ld+json">' . wp_json_encode(json_decode($jsonld)) . '</script>';
         }
