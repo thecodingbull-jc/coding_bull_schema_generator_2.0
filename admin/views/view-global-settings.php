@@ -211,31 +211,6 @@ function tcb_schema_get_selected_posts($property_name) {
             </div>
 
             <div>
-                <h4>Web Agency Credit</h4>
-                <p style="font-size:13px; color:#555; margin-bottom:10px;">
-                    When name and URL are set, a <code>WebSite</code> schema with a <code>creator</code> property will be output on the front page to credit the agency that designed and built this site.
-                </p>
-                <div style="margin-bottom:10px;">
-                    <label for="schema-generator-agency-name"><b>Web Agency Name:</b></label><br>
-                    <input type="text" id="schema-generator-agency-name" name="schema-generator-agency-name"
-                           value="<?php echo esc_attr($saved_settings['agency_name'] ?? 'Coding Bull - Web Design Company & Digital Marketing Agency'); ?>"
-                           style="width:400px;" />
-                </div>
-                <div style="margin-bottom:10px;">
-                    <label for="schema-generator-agency-url"><b>Web Agency URL:</b></label><br>
-                    <input type="text" id="schema-generator-agency-url" name="schema-generator-agency-url"
-                           value="<?php echo esc_attr($saved_settings['agency_url'] ?? 'https://thecodingbull.com/'); ?>"
-                           style="width:400px;" />
-                </div>
-                <div style="margin-bottom:10px;">
-                    <label for="schema-generator-agency-description"><b>Web Agency Description:</b></label><br>
-                    <input type="text" id="schema-generator-agency-description" name="schema-generator-agency-description"
-                           value="<?php echo esc_attr($saved_settings['agency_description'] ?? 'We help service-based businesses fill up their sales pipeline by getting their website design & digital marketing right.'); ?>"
-                           style="width:400px;" />
-                </div>
-            </div>
-
-            <div>
                 <h4>How To Make Different Content Show In Different Schema</h4>
 
                 <details style="margin-bottom:10px; background:#f0f6fc; border:1px solid #b3d4f5; border-radius:6px; padding:12px 16px;">
@@ -514,9 +489,6 @@ jQuery(document).ready(function($){
                 manual_service_general_posts:getSelectedPostsByDiv("sc_select_service_general_pages"),
                 manual_service_capability_posts:getSelectedPostsByDiv("sc_select_service_capability_pages"),
                 past_project_posttype: $('#schema-generator-past-project-page-definition').val(),
-                agency_name:        $('#schema-generator-agency-name').val(),
-                agency_url:         $('#schema-generator-agency-url').val(),
-                agency_description: $('#schema-generator-agency-description').val(),
             }
         };
         console.log(data);

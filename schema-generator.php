@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Schema Generator
  * Description: A framework plugin for generating schema markup with multiple configuration tabs.
- * Version: 1.0.22
+ * Version: 1.0.23
  * Author: The Coding Bull
  * Text Domain: schema-generator
  */
@@ -70,14 +70,11 @@ add_action('wp_head', function() {
     }
 });
 
-add_action('wp_head', function() {
-    if (is_front_page()) {
-        $jsonld = get_option('homepage_website_jsonld_script');
-        if ($jsonld) {
-            echo '<script type="application/ld+json">' . wp_json_encode(json_decode($jsonld)) . '</script>';
-        }
-    }
-});
+// The front-page WebSite/creator credit that used to print here now lives in the
+// TCB Elementor Widgets plugin (productivity/agency-attribution-schema.php). It
+// runs on every page instead of only the front page, and gives the agency a
+// stable @id so the same entity resolves across every client site. The
+// homepage_website_jsonld_script option is left in place but no longer read.
 
 add_action('wp_head', function() {
     if (is_singular()) {
